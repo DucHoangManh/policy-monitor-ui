@@ -45,8 +45,16 @@ export default function SelectNamespace(props) {
     if (options[selectedIndex] != null) {
       if (options[selectedIndex].latest) {
         setDisplayVersion('latest')
+        setPolicyContext({
+          ...policyContext,
+          allowUpdate: true,
+        })
       } else {
         setDisplayVersion(options[selectedIndex].id.substring(4, 9))
+        setPolicyContext({
+          ...policyContext,
+          allowUpdate: false,
+        })
       }
     }
   }, [selectedIndex])
@@ -65,9 +73,6 @@ export default function SelectNamespace(props) {
     })
   }, [])
 
-  useEffect(() => {
-    console.log(policyContext)
-  }, [policyContext])
   return (
     <div>
       <List component='nav' aria-label='Device settings'>
