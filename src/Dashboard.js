@@ -19,9 +19,7 @@ import MenuIcon from '@material-ui/icons/Menu'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import NotificationsIcon from '@material-ui/icons/Notifications'
 import { mainListItems, secondaryListItems } from './listItems'
-// import Chart from './Chart'
-// import Deposits from './Deposits'
-import Orders from './Orders'
+import PolicyList from './Component/Policy/PolicyList'
 import SelectNamespace from './Component/SelectNamespace'
 import SelectVersion from './Component/SelectVersion'
 function Copyright() {
@@ -188,7 +186,7 @@ export default function Dashboard() {
         <Container maxWidth='lg' className={classes.container}>
           <Grid item xs={12}>
             <Paper className={classes.paper}>
-              <Orders />
+              <PolicyList />
             </Paper>
           </Grid>
           <Box pt={4}>

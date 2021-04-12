@@ -6,7 +6,11 @@ import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
-import Title from './Component/Policy/Title'
+import DeleteIcon from '@material-ui/icons/DeleteForeverOutlined'
+import OpenIcon from '@material-ui/icons/OpenInNewOutlined'
+import AddIcon from '@material-ui/icons/AddCircleOutlineOutlined'
+import Title from './Title'
+import { IconButton } from '@material-ui/core'
 
 // Generate Order Data
 function createData(id, date, name, shipTo, paymentMethod, amount) {
@@ -63,8 +67,17 @@ function preventDefault(event) {
 const useStyles = makeStyles((theme) => ({
   seeMore: {
     marginTop: theme.spacing(3),
+    display: 'flex',
+    justifyContent: 'flex-end',
   },
 }))
+
+const handleDeleteClicked = (event, index) => {
+  console.log(index)
+}
+const handleOpenClicked = (event, index) => {
+  console.log('Open clicked ' + index)
+}
 
 export default function Orders() {
   const classes = useStyles()
@@ -72,31 +85,34 @@ export default function Orders() {
     <React.Fragment>
       <Title>&gt;Network Policy</Title>
       <Table size='small'>
-        <TableHead>
-          <TableRow>
-            <TableCell>Date</TableCell>
-            <TableCell>Name</TableCell>
-            <TableCell>Ship To</TableCell>
-            <TableCell>Payment Method</TableCell>
-            <TableCell align='right'>Sale Amount</TableCell>
-          </TableRow>
-        </TableHead>
         <TableBody>
-          {rows.map((row) => (
+          {rows.map((row, index) => (
             <TableRow key={row.id}>
               <TableCell>{row.date}</TableCell>
               <TableCell>{row.name}</TableCell>
-              <TableCell>{row.shipTo}</TableCell>
-              <TableCell>{row.paymentMethod}</TableCell>
-              <TableCell align='right'>{row.amount}</TableCell>
+              <TableCell padding='checkbox'>
+                <IconButton
+                  onClick={(event) => handleDeleteClicked(event, index)}
+                >
+                  <DeleteIcon />
+                </IconButton>
+              </TableCell>
+              <TableCell align='right' padding='checkbox'>
+                <IconButton
+                  onClick={(event) => handleOpenClicked(event, index)}
+                >
+                  <OpenIcon />
+                </IconButton>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
       <div className={classes.seeMore}>
-        <Link color='primary' href='#' onClick={preventDefault}>
-          See more orders
-        </Link>
+        <IconButton>
+          Add
+          <AddIcon />
+        </IconButton>
       </div>
     </React.Fragment>
   )

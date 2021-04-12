@@ -21,9 +21,10 @@ const useStyles = makeStyles((theme) => ({
 export default function SelectNamespace(props) {
   const classes = useStyles()
   const [policyContext, setPolicyContext] = useContext(PolicyContext)
-  const [options, setOptions] = React.useState(['default'])
+  const [options, setOptions] = React.useState([,])
   const [anchorEl, setAnchorEl] = React.useState(null)
-  const [selectedIndex, setSelectedIndex] = React.useState(1)
+  const [selectedIndex, setSelectedIndex] = React.useState(0)
+  const [displayVersion, setDisplayVersion] = React.useState('latest')
   const handleClickListItem = (event) => {
     setAnchorEl(event.currentTarget)
   }
@@ -31,7 +32,7 @@ export default function SelectNamespace(props) {
   const handleMenuItemClick = (event, index) => {
     setPolicyContext({
       ...policyContext,
-      currentNamespace: options[index],
+      currentVersion: options[index].id,
     })
     setSelectedIndex(index)
     setAnchorEl(null)
@@ -41,22 +42,29 @@ export default function SelectNamespace(props) {
     setAnchorEl(null)
   }
   useEffect(() => {
+    if (options[selectedIndex] != null) {
+      if (options[selectedIndex].latest) {
+        setDisplayVersion('latest')
+      } else {
+        setDisplayVersion(options[selectedIndex].id.substring(4, 9))
+      }
+    }
+  }, [selectedIndex])
+  useEffect(() => {
     const fetchData = async () => {
       const res = await API.get(`/version`)
-      const data = res.data.map((item) => {
-        return item.id
-      })
-      setOptions(data)
+      setOptions(res.data)
     }
     fetchData()
     options.forEach((item, index) => {
-      if (item === policyContext.currentVersion) {
+      if (item.latest) {
         setSelectedIndex(index)
         return
       }
       setSelectedIndex(1)
     })
   }, [])
+
   useEffect(() => {
     console.log(policyContext)
   }, [policyContext])
@@ -71,7 +79,7 @@ export default function SelectNamespace(props) {
           onClick={handleClickListItem}
           className={classes.menu}
         >
-          <ListItemText primary='Version' secondary={options[selectedIndex]} />
+          <ListItemText primary='Version' secondary={displayVersion} />
         </ListItem>
       </List>
       <Menu
@@ -81,15 +89,23 @@ export default function SelectNamespace(props) {
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-        {options.map((option, index) => (
-          <MenuItem
-            key={option}
-            selected={index === selectedIndex}
-            onClick={(event) => handleMenuItemClick(event, index)}
-          >
-            {option}
-          </MenuItem>
-        ))}
+        {options.map((option, index) => {
+          let op = ''
+          if (option.latest) {
+            op = 'latest'
+          } else {
+            op = option.id.substring(4, 9)
+          }
+          return (
+            <MenuItem
+              key={option.id}
+              selected={index === selectedIndex}
+              onClick={(event) => handleMenuItemClick(event, index)}
+            >
+              {op}
+            </MenuItem>
+          )
+        })}
       </Menu>
     </div>
   )
