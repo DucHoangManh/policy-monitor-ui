@@ -18,15 +18,15 @@ import Link from '@material-ui/core/Link'
 import MenuIcon from '@material-ui/icons/Menu'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import NotificationsIcon from '@material-ui/icons/Notifications'
-import { mainListItems, secondaryListItems } from './listItems'
+import { mainListItems, secondaryListItems } from './PolicyList'
 import PolicyList from './Component/Policy/PolicyList'
 import SelectNamespace from './Component/SelectNamespace'
 import SelectVersion from './Component/SelectVersion'
+import VersionList from './Component/Version/VersionList'
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
 function Copyright() {
   return (
     <Typography variant='body2' color='textSecondary' align='center'>
-      {'Hoang Manh Duc '}
-
       {new Date().getFullYear()}
       {'.'}
     </Typography>
@@ -127,72 +127,81 @@ export default function Dashboard() {
   // const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight)
 
   return (
-    <div className={classes.root}>
-      <CssBaseline />
-      <AppBar
-        position='absolute'
-        className={clsx(classes.appBar, open && classes.appBarShift)}
-      >
-        <Toolbar className={classes.toolbar}>
-          <IconButton
-            edge='start'
-            color='inherit'
-            aria-label='open drawer'
-            onClick={handleDrawerOpen}
-            className={clsx(
-              classes.menuButton,
-              open && classes.menuButtonHidden
-            )}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography
-            component='h1'
-            variant='h6'
-            color='inherit'
-            noWrap
-            className={classes.title}
-          >
-            Policy monitor
-          </Typography>
-          <SelectVersion />
-          <SelectNamespace className={classes.title} />
-          <IconButton color='inherit'>
-            <Badge badgeContent={4} color='secondary'>
-              <NotificationsIcon />
-            </Badge>
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-      <Drawer
-        variant='permanent'
-        classes={{
-          paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
-        }}
-        open={open}
-      >
-        <div className={classes.toolbarIcon}>
-          <IconButton onClick={handleDrawerClose}>
-            <ChevronLeftIcon />
-          </IconButton>
-        </div>
-        <Divider />
-        <List>{mainListItems}</List>
-        <Divider />
-      </Drawer>
-      <main className={classes.content}>
-        <div className={classes.appBarSpacer} />
-        <Container maxWidth='lg' className={classes.container}>
-          <Grid item xs={12}>
-            <Paper className={classes.paper}>
-              <PolicyList />
-            </Paper>
-          </Grid>
-          <Box pt={4}>
-            <Copyright />
-          </Box>
-        </Container>
-      </main>
-    </div>
+    <BrowserRouter>
+      <div className={classes.root}>
+        <CssBaseline />
+        <AppBar
+          position='absolute'
+          className={clsx(classes.appBar, open && classes.appBarShift)}
+        >
+          <Toolbar className={classes.toolbar}>
+            <IconButton
+              edge='start'
+              color='inherit'
+              aria-label='open drawer'
+              onClick={handleDrawerOpen}
+              className={clsx(
+                classes.menuButton,
+                open && classes.menuButtonHidden
+              )}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography
+              component='h1'
+              variant='h6'
+              color='inherit'
+              noWrap
+              className={classes.title}
+            >
+              Kubernetes Network Policy Monitoring
+            </Typography>
+            <SelectVersion />
+            <SelectNamespace className={classes.title} />
+            <IconButton color='inherit'>
+              <Badge badgeContent={0} color='secondary'>
+                <NotificationsIcon />
+              </Badge>
+            </IconButton>
+          </Toolbar>
+        </AppBar>
+        <Drawer
+          variant='permanent'
+          classes={{
+            paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
+          }}
+          open={open}
+        >
+          <div className={classes.toolbarIcon}>
+            <IconButton onClick={handleDrawerClose}>
+              <ChevronLeftIcon />
+            </IconButton>
+          </div>
+          <Divider />
+          <List>{mainListItems}</List>
+          <Divider />
+        </Drawer>
+        <main className={classes.content}>
+          <div className={classes.appBarSpacer} />
+          <Container maxWidth='lg' className={classes.container}>
+            <Grid item xs={12}>
+              <Paper className={classes.paper}>
+                <Switch>
+                  <Route exact path={['/', '/policy']}>
+                    <PolicyList />
+                  </Route>
+                  <Route exact path='/version'>
+                    <VersionList />
+                  </Route>
+                </Switch>
+              </Paper>
+            </Grid>
+            <Box pt={4}>
+              <Copyright />
+            </Box>
+          </Container>
+        </main>
+      </div>
+    </BrowserRouter>
   )
 }

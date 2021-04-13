@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
 export default function SelectNamespace(props) {
   const classes = useStyles()
   const [policyContext, setPolicyContext] = useContext(PolicyContext)
-  const [options, setOptions] = React.useState([,])
+  const [options, setOptions] = React.useState([])
   const [anchorEl, setAnchorEl] = React.useState(null)
   const [selectedIndex, setSelectedIndex] = React.useState(0)
   const [displayVersion, setDisplayVersion] = React.useState('latest')
@@ -62,15 +62,15 @@ export default function SelectNamespace(props) {
     const fetchData = async () => {
       const res = await API.get(`/version`)
       setOptions(res.data)
+      res.data.forEach((item, index) => {
+        if (item.latest) {
+          setSelectedIndex(index)
+          return
+        }
+        setSelectedIndex(1)
+      })
     }
     fetchData()
-    options.forEach((item, index) => {
-      if (item.latest) {
-        setSelectedIndex(index)
-        return
-      }
-      setSelectedIndex(1)
-    })
   }, [])
 
   return (
