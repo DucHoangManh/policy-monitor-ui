@@ -1,11 +1,26 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
+import Breadcrumbs from '@material-ui/core/Breadcrumbs'
 import Typography from '@material-ui/core/Typography'
-
-export default function Title(props) {
+import { Link } from 'react-router-dom'
+import NavigateNextIcon from '@material-ui/icons/NavigateNext'
+export default function Title({ content }) {
   return (
-    <Typography component='h2' variant='h6' color='primary' gutterBottom>
-      {props.children}
-    </Typography>
+    <Breadcrumbs
+      aria-label='breadcrumb'
+      separator={<NavigateNextIcon fontSize='small' />}
+    >
+      {content.map((item) => (
+        <Typography
+          style={{ textDecoration: 'none' }}
+          component={Link}
+          to={item.destination}
+          color='textPrimary'
+          variant='h6'
+        >
+          {item.display}
+        </Typography>
+      ))}
+    </Breadcrumbs>
   )
 }

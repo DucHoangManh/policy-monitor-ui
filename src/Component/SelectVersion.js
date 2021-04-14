@@ -4,6 +4,7 @@ import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import MenuItem from '@material-ui/core/MenuItem'
+import Box from '@material-ui/core/Box'
 import Menu from '@material-ui/core/Menu'
 import { useContext } from 'react'
 import { PolicyContext } from '../Context/policyContext'
@@ -84,7 +85,13 @@ export default function SelectNamespace(props) {
           onClick={handleClickListItem}
           className={classes.menu}
         >
-          <ListItemText primary='Version' secondary={displayVersion} />
+          <Box textAlign='right' style={{ paddingRight: 5 }}>
+            Version
+          </Box>
+          <ListItemText
+            secondaryTypographyProps={{ align: 'left' }}
+            secondary={displayVersion}
+          />
         </ListItem>
       </List>
       <Menu

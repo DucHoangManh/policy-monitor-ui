@@ -9,6 +9,8 @@ import TableRow from '@material-ui/core/TableRow'
 import DeleteIcon from '@material-ui/icons/DeleteForeverOutlined'
 import OpenIcon from '@material-ui/icons/OpenInNewOutlined'
 import AddIcon from '@material-ui/icons/AddCircleOutlineOutlined'
+import Paper from '@material-ui/core/Paper'
+import TableContainer from '@material-ui/core/TableContainer'
 import { PolicyContext } from '../../Context/policyContext'
 import API from '../../Apis/policyRequest'
 import Title from '../../Component/Policy/Title'
@@ -24,6 +26,9 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'flex-end',
   },
+  table: {
+    minWidth: 650,
+  },
 }))
 
 export default function Orders() {
@@ -37,19 +42,35 @@ export default function Orders() {
     }
     fetchData()
   }, [])
+  const navigator = [
+    {
+      display: 'Version',
+      destination: '/version',
+    },
+  ]
   return (
     <React.Fragment>
-      <Title>&gt; Policy Version</Title>
-      <Table size='small'>
-        <TableBody>
-          {versions.map((item, index) => (
-            <TableRow key={item.id}>
-              <TableCell>{item.id + (item.latest && '(latest)')}</TableCell>
-              <TableCell>{item.content}</TableCell>
+      <Title content={navigator}>&gt; Policy Version</Title>
+      <TableContainer component={Paper}>
+        <Table size='medium'>
+          <TableHead>
+            <TableRow>
+              <TableCell>Name</TableCell>
+              <TableCell>Content</TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHead>
+          <TableBody>
+            {versions.map((item, index) => (
+              <TableRow hover key={item.id}>
+                <TableCell>
+                  {item.id + (item.latest ? '(latest)' : '')}
+                </TableCell>
+                <TableCell>{item.content}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </React.Fragment>
   )
 }

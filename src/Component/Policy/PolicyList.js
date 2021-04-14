@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react'
 import Link from '@material-ui/core/Link'
 import { makeStyles } from '@material-ui/core/styles'
+import TableContainer from '@material-ui/core/TableContainer'
 import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
@@ -9,6 +10,7 @@ import TableRow from '@material-ui/core/TableRow'
 import DeleteIcon from '@material-ui/icons/DeleteForeverOutlined'
 import OpenIcon from '@material-ui/icons/OpenInNewOutlined'
 import AddIcon from '@material-ui/icons/AddCircleOutlineOutlined'
+import Paper from '@material-ui/core/Paper'
 import { PolicyContext } from '../../Context/policyContext'
 import API from '../../Apis/policyRequest'
 import Title from './Title'
@@ -48,37 +50,56 @@ export default function PolicyList() {
     }
     fetchData()
   }, [policyContext])
+  const navigator = [
+    {
+      display: 'Network Policy',
+      destination: '/policy',
+    },
+  ]
   return (
     <React.Fragment>
-      <Title>&gt; Network Policy</Title>
-      <Table size='small'>
-        <TableBody>
-          {policies.map((item, index) => (
-            <TableRow key={item.id}>
-              <TableCell>{item.networkPolicy.metadata.name}</TableCell>
-              <TableCell>
-                {item.networkPolicy.metadata.creationTimestamp}
-              </TableCell>
-              <TableCell padding='checkbox'>
-                {policyContext.allowUpdate && (
-                  <IconButton
-                    onClick={(event) => handleDeleteClicked(event, index)}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                )}
-              </TableCell>
-              <TableCell align='right' padding='checkbox'>
-                <IconButton
-                  onClick={(event) => handleOpenClicked(event, index)}
-                >
-                  <OpenIcon />
-                </IconButton>
+      <Title content={navigator} />
+      <TableContainer component={Paper}>
+        <Table size='medium'>
+          <TableHead>
+            <TableRow>
+              <TableCell>Name</TableCell>
+              <TableCell>Node Selector</TableCell>
+              <TableCell colSpan={2} align='center'>
+                Action
               </TableCell>
             </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+          </TableHead>
+          <TableBody>
+            {policies.map((item, index) => (
+              <TableRow hover key={item.id}>
+                <TableCell>{item.networkPolicy.metadata.name}</TableCell>
+                <TableCell>
+                  {JSON.stringify(
+                    item.networkPolicy.spec.podSelector.matchLabels
+                  )}
+                </TableCell>
+                <TableCell padding='checkbox'>
+                  {policyContext.allowUpdate && (
+                    <IconButton
+                      onClick={(event) => handleDeleteClicked(event, index)}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  )}
+                </TableCell>
+                <TableCell align='right' padding='checkbox'>
+                  <IconButton
+                    onClick={(event) => handleOpenClicked(event, index)}
+                  >
+                    <OpenIcon />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
       <div className={classes.seeMore}>
         <IconButton>
           Add

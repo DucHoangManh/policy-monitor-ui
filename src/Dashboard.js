@@ -18,8 +18,8 @@ import Link from '@material-ui/core/Link'
 import MenuIcon from '@material-ui/icons/Menu'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import NotificationsIcon from '@material-ui/icons/Notifications'
-import { mainListItems, secondaryListItems } from './PolicyList'
-import PolicyList from './Component/Policy/PolicyList'
+import { mainListItems, secondaryListItems } from './MenuItem'
+import Policies from './Component/Policy/PolicyList'
 import SelectNamespace from './Component/SelectNamespace'
 import SelectVersion from './Component/SelectVersion'
 import VersionList from './Component/Version/VersionList'
@@ -188,7 +188,7 @@ export default function Dashboard() {
               <Paper className={classes.paper}>
                 <Switch>
                   <Route exact path={['/', '/policy']}>
-                    <PolicyList />
+                    <Policies />
                   </Route>
                   <Route exact path='/version'>
                     <VersionList />

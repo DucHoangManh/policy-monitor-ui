@@ -5,6 +5,9 @@ import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import MenuItem from '@material-ui/core/MenuItem'
 import Menu from '@material-ui/core/Menu'
+import GridListTile from '@material-ui/core/GridListTile'
+import GridListTileBar from '@material-ui/core/GridListTileBar'
+import Box from '@material-ui/core/Box'
 import { useContext } from 'react'
 import { PolicyContext } from '../Context/policyContext'
 import API from '../Apis/policyRequest'
@@ -57,6 +60,11 @@ export default function SelectNamespace(props) {
   useEffect(() => {
     console.log(policyContext)
   }, [policyContext])
+  const flexContainer = {
+    display: 'flex',
+    flexDirection: 'row',
+    padding: 0,
+  }
   return (
     <div>
       <List component='nav' aria-label='Device settings'>
@@ -68,8 +76,11 @@ export default function SelectNamespace(props) {
           onClick={handleClickListItem}
           className={classes.menu}
         >
+          <Box textAlign='right' style={{ paddingRight: 5 }}>
+            Namespace
+          </Box>
           <ListItemText
-            primary='Namespace'
+            secondaryTypographyProps={{ align: 'left' }}
             secondary={options[selectedIndex]}
           />
         </ListItem>
