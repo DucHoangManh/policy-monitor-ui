@@ -30,7 +30,7 @@ export default function PolicyDetail() {
         }
       )
       if (res.status === 200) {
-        console.log(res.data.networkPolicy)
+        setPolicyDetail(res.data.networkPolicy)
       }
     }
     fetchData()
@@ -39,8 +39,7 @@ export default function PolicyDetail() {
     <>
       <Title content={navigator} />
       <Paper>
-        Detail
-        <Policy />
+        <Policy detail={policyDetail} />
       </Paper>
     </>
   )
