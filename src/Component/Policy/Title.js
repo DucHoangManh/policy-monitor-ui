@@ -12,6 +12,7 @@ export default function Title({ content }) {
     >
       {content.map((item) => (
         <Typography
+          key={item.display}
           style={{ textDecoration: 'none' }}
           component={Link}
           to={item.destination}

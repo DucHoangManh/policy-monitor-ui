@@ -20,6 +20,7 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import NotificationsIcon from '@material-ui/icons/Notifications'
 import { mainListItems, secondaryListItems } from './MenuItem'
 import Policies from './Component/Policy/PolicyList'
+import PolicyDetail from './Component/Policy/PolicyDetail'
 import SelectNamespace from './Component/SelectNamespace'
 import SelectVersion from './Component/SelectVersion'
 import VersionList from './Component/Version/VersionList'
@@ -189,6 +190,9 @@ export default function Dashboard() {
                 <Switch>
                   <Route exact path={['/', '/policy']}>
                     <Policies />
+                  </Route>
+                  <Route path='/policy/:name'>
+                    <PolicyDetail />
                   </Route>
                   <Route exact path='/version'>
                     <VersionList />

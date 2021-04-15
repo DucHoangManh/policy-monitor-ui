@@ -60,11 +60,7 @@ export default function SelectNamespace(props) {
   useEffect(() => {
     console.log(policyContext)
   }, [policyContext])
-  const flexContainer = {
-    display: 'flex',
-    flexDirection: 'row',
-    padding: 0,
-  }
+
   return (
     <div>
       <List component='nav' aria-label='Device settings'>

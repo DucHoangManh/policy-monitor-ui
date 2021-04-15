@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react'
-import Link from '@material-ui/core/Link'
+import { Link } from 'react-router-dom'
 import { makeStyles } from '@material-ui/core/styles'
 import TableContainer from '@material-ui/core/TableContainer'
 import Table from '@material-ui/core/Table'
@@ -91,6 +91,8 @@ export default function PolicyList() {
                 <TableCell align='right' padding='checkbox'>
                   <IconButton
                     onClick={(event) => handleOpenClicked(event, index)}
+                    component={Link}
+                    to={`/policy/${item.networkPolicy.metadata.name}`}
                   >
                     <OpenIcon />
                   </IconButton>
