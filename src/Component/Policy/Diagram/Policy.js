@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import ReactFlow from 'react-flow-renderer'
 import PolicyMain from './PolicyMain'
 
-export default ({ detail }) => {
+export default ({ policyDetail, setPolicyDetail }) => {
   const elements = [
     {
       id: '1',
@@ -18,8 +18,8 @@ export default ({ detail }) => {
       // you can also pass a React component as a label
       sourcePosition: 'right',
       targetPosition: 'left',
-      data: detail,
-      type: 'special',
+      data: { policyDetail: policyDetail, setPolicyDetail: setPolicyDetail },
+      type: 'main',
       position: { x: 500, y: 125 },
     },
     {
@@ -36,7 +36,7 @@ export default ({ detail }) => {
     { id: 'e2-3', source: '2', target: '3', animated: true },
   ]
   const nodeTypes = {
-    special: PolicyMain,
+    main: PolicyMain,
   }
 
   return (

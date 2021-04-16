@@ -1,7 +1,9 @@
 import ReactFlow, { Handle } from 'react-flow-renderer'
 import AddIcon from '@material-ui/icons/AddCircleOutlineOutlined'
 import CodeIcon from '@material-ui/icons/Code'
+import DeleteIcon from '@material-ui/icons/HighlightOff'
 import { makeStyles } from '@material-ui/core/styles'
+import { useState } from 'react'
 import {
   Paper,
   Box,
@@ -14,7 +16,7 @@ import {
 import { useEffect } from 'react'
 const useStyles = makeStyles({
   root: {
-    minWidth: 275,
+    minWidth: 300,
   },
   bullet: {
     display: 'inline-block',
@@ -32,7 +34,9 @@ const useStyles = makeStyles({
   },
   textField: {
     width: 120,
-    margin: 10,
+    margin: 1,
+    marginTop: 3,
+    marginRight: 1,
   },
   resize: {
     fontSize: 12,
@@ -40,7 +44,31 @@ const useStyles = makeStyles({
 })
 export default ({ data }) => {
   const classes = useStyles()
-
+  const policyDetail = data.policyDetail
+  const handleAddClicked = (event) => {
+    alert('add clicked')
+  }
+  const renderNodeSelectors = () => {
+    return Object.keys(policyDetail.spec.podSelector.matchLabels).map((key) => (
+      <Box display='flex' flexDirection='row' justifyContent='center'>
+        <TextField
+          variant='outlined'
+          defaultValue={`${key}:${policyDetail.spec.podSelector.matchLabels[key]}`}
+          size='small'
+          margin='none'
+          InputProps={{
+            classes: {
+              input: classes.resize,
+            },
+          }}
+          className={classes.textField}
+        />
+        <IconButton edge='end' size='small'>
+          <DeleteIcon className={classes.title} />
+        </IconButton>
+      </Box>
+    ))
+  }
   return (
     <Paper style={{ minWidth: 150 }} variant='outlined'>
       <Handle type='target' position='left' style={{ background: '#555' }} />
@@ -62,25 +90,12 @@ export default ({ data }) => {
           <CodeIcon className={classes.bigTitle} />
           <Typography className={classes.title}>{'Node Selector'}</Typography>
         </Box>
-        <IconButton edge='end' size='small'>
+        <IconButton edge='end' size='small' onClick={handleAddClicked}>
           <AddIcon className={classes.title} />
         </IconButton>
       </Box>
       <Divider />
-      <Box display='flex' flexDirection='row' justifyContent='space-between'>
-        <TextField
-          variant='outlined'
-          defaultValue={JSON.stringify(data.spec.podSelector.matchLabels)}
-          size='small'
-          margin='none'
-          InputProps={{
-            classes: {
-              input: classes.resize,
-            },
-          }}
-          className={classes.textField}
-        />
-      </Box>
+      {policyDetail.spec ? renderNodeSelectors() : 'loading'}
     </Paper>
   )
 }

@@ -39,7 +39,7 @@ export default function PolicyDetail() {
     <>
       <Title content={navigator} />
       <Paper>
-        <Policy detail={policyDetail} />
+        <Policy policyDetail={policyDetail} setPolicyDetail={setPolicyDetail} />
       </Paper>
     </>
   )
