@@ -41,7 +41,11 @@ export default ({ policyDetail, setPolicyDetail }) => {
 
   return (
     <div style={{ height: 400 }}>
-      <ReactFlow elements={elements} nodeTypes={nodeTypes} />
+      <ReactFlow
+        elements={elements}
+        nodeTypes={nodeTypes}
+        nodesDraggable={true}
+      />
     </div>
   )
 }
