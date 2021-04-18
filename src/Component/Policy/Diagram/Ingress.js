@@ -45,6 +45,9 @@ const useStyles = makeStyles({
     marginTop: 3,
     marginRight: 1,
   },
+  resizeTitle: {
+    fontSize: 13,
+  },
   resize: {
     fontSize: 12,
   },
@@ -96,35 +99,114 @@ export default ({ data }) => {
   const handleChangeText = (event) => {
     setFieldContent(event.target.value)
   }
-  // useEffect(() => {
-  //   policyDetail.spec && console.log(policyDetail.spec.podSelector.matchLabels)
-  // }, [policyDetail])
-  const renderNodeSelectors = () => {
+  const renderNamespace = (ingressItem) => {
     return (
-      policyDetail.spec.podSelector.matchLabels &&
-      Object.keys(policyDetail.spec.podSelector.matchLabels).map((key) => (
-        <Box
-          px={2}
-          key={key}
-          display='flex'
-          flexDirection='row'
-          justifyContent='space-between'
-        >
-          <Typography className={classes.resize}>
-            {`${key}:${policyDetail.spec.podSelector.matchLabels[key]}`}
+      ingressItem.from[0].namespaceSelector && (
+        <>
+          <Typography className={classes.resizeTitle}>
+            {'Namespace Selector'}
           </Typography>
 
-          <IconButton onClick={() => handleDelete(key)} edge='end' size='small'>
-            <DeleteIcon className={classes.title} />
-          </IconButton>
-        </Box>
-      ))
+          <Divider light={true} variant='middle' />
+          {Object.keys(ingressItem.from[0].namespaceSelector.matchLabels).map(
+            (key) => {
+              return (
+                <Typography
+                  key={key}
+                  className={classes.resize}
+                >{`${key}:${ingressItem.from[0].namespaceSelector.matchLabels[key]}`}</Typography>
+              )
+            }
+          )}
+        </>
+      )
+    )
+  }
+  const renderPod = (ingressItem) => {
+    return (
+      ingressItem.from[0].podSelector && (
+        <>
+          <Typography className={classes.resizeTitle}>
+            {'Pod Selector'}
+          </Typography>
+
+          <Divider light={true} variant='middle' />
+          {Object.keys(ingressItem.from[0].podSelector.matchLabels).map(
+            (key) => {
+              return (
+                <Typography
+                  key={key}
+                  className={classes.resize}
+                >{`${key}:${ingressItem.from[0].podSelector.matchLabels[key]}`}</Typography>
+              )
+            }
+          )}
+        </>
+      )
+    )
+  }
+  const renderPort = (ingressItem) => {
+    console.log(ingressItem.ports)
+    return (
+      ingressItem.ports && (
+        <>
+          <Typography className={classes.resizeTitle}>
+            {'Port Allowed'}
+          </Typography>
+
+          <Divider light={true} variant='middle' />
+          <Box display='flex' flexDirection='row'>
+            {ingressItem.ports.map((item) => {
+              return (
+                <Typography
+                  className={classes.resize}
+                  key={item.port}
+                >{`:${item.port}`}</Typography>
+              )
+            })}
+          </Box>
+        </>
+      )
+    )
+  }
+  const renderIngress = () => {
+    //console.log(policyDetail)
+    return (
+      policyDetail.spec.ingress &&
+      policyDetail.spec.ingress.map((ingressItem, index) => {
+        return (
+          <Box key={index}>
+            <Box
+              px={2}
+              display='flex'
+              flexDirection='row'
+              justifyContent='space-between'
+            >
+              <Box>
+                {renderNamespace(ingressItem)}
+                <Box my={1} />
+                {renderPod(ingressItem)}
+                <Box my={1} />
+                {renderPort(ingressItem)}
+              </Box>
+              <IconButton
+                onClick={() => handleDelete(index)}
+                edge='end'
+                size='small'
+              >
+                <DeleteIcon className={classes.title} />
+              </IconButton>
+            </Box>
+            <Box my={1} />
+            <Divider />
+          </Box>
+        )
+      })
     )
   }
 
   return (
     <Paper style={{ minWidth: 150 }} variant='outlined'>
-      <Handle type='target' position='left' style={{ background: '#555' }} />
       <Handle
         type='source'
         position='right'
@@ -141,14 +223,14 @@ export default ({ data }) => {
       >
         <Box display='flex' justifyContent='start' alignItems='center'>
           <CodeIcon className={classes.bigTitle} />
-          <Typography className={classes.title}>{'Pod Selector'}</Typography>
+          <Typography className={classes.bigTitle}>{'Ingress'}</Typography>
         </Box>
         <IconButton edge='end' size='small' onClick={handleAddClicked}>
           <AddIcon className={classes.title} />
         </IconButton>
       </Box>
       <Divider />
-      {policyDetail.spec ? renderNodeSelectors() : 'loading'}
+      {policyDetail.spec ? renderIngress() : 'loading'}
 
       <Dialog
         open={openDialog}

@@ -8,6 +8,7 @@ import Box from '@material-ui/core/Box'
 import Menu from '@material-ui/core/Menu'
 import { useContext } from 'react'
 import { PolicyContext } from '../Context/policyContext'
+import { useHistory } from 'react-router-dom'
 import API from '../Apis/policyRequest'
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -26,6 +27,7 @@ export default function SelectNamespace(props) {
   const [anchorEl, setAnchorEl] = React.useState(null)
   const [selectedIndex, setSelectedIndex] = React.useState(0)
   const [displayVersion, setDisplayVersion] = React.useState('latest')
+  const history = useHistory()
   const handleClickListItem = (event) => {
     setAnchorEl(event.currentTarget)
   }
@@ -37,6 +39,7 @@ export default function SelectNamespace(props) {
     })
     setSelectedIndex(index)
     setAnchorEl(null)
+    history.push('/')
   }
 
   const handleClose = () => {

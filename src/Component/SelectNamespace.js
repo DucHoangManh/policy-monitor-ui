@@ -10,6 +10,7 @@ import GridListTileBar from '@material-ui/core/GridListTileBar'
 import Box from '@material-ui/core/Box'
 import { useContext } from 'react'
 import { PolicyContext } from '../Context/policyContext'
+import { useHistory } from 'react-router-dom'
 import API from '../Apis/policyRequest'
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,6 +28,7 @@ export default function SelectNamespace(props) {
   const [options, setOptions] = React.useState(['default'])
   const [anchorEl, setAnchorEl] = React.useState(null)
   const [selectedIndex, setSelectedIndex] = React.useState(1)
+  const history = useHistory()
   const handleClickListItem = (event) => {
     setAnchorEl(event.currentTarget)
   }
@@ -38,6 +40,7 @@ export default function SelectNamespace(props) {
     })
     setSelectedIndex(index)
     setAnchorEl(null)
+    history.push('/')
   }
 
   const handleClose = () => {
