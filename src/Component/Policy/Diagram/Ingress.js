@@ -7,6 +7,7 @@ import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
+import Radio from '@material-ui/core/Radio'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import { useState } from 'react'
 import {
@@ -16,8 +17,9 @@ import {
   IconButton,
   Divider,
   TextField,
-  Input,
+  Snackbar,
 } from '@material-ui/core'
+import MuiAlert from '@material-ui/lab/Alert'
 import { useEffect } from 'react'
 const useStyles = makeStyles({
   root: {
@@ -49,32 +51,82 @@ const useStyles = makeStyles({
     fontSize: 12,
   },
 })
+function Alert(props) {
+  return <MuiAlert elevation={6} variant='outlined' {...props} />
+}
 export default ({ data }) => {
   const classes = useStyles()
   const policyDetail = data.policyDetail
   const setPolicyDetail = data.setPolicyDetail
   const [openDialog, setOpenDialog] = useState(false)
-  const [selectorList, setSelectorList] = useState([])
-  const [fieldContent, setFieldContent] = useState('')
+  const [namespaceSelector, setNamespaceSelector] = useState('')
+  const [podSelector, setPodSelector] = useState('')
+  const [port, setPort] = useState('')
+  const [errorBar, setErrorBar] = useState(false)
+  const [errorBarContent, setErrorBarContent] = useState(false)
   const handleAddClicked = (event) => {
+    setNamespaceSelector('')
+    setPodSelector('')
+    setPort('')
     setOpenDialog(true)
   }
+  const handleCloseErrorBar = () => {
+    setErrorBar = false
+  }
   const handleAdd = (event) => {
-    const [key, value] = fieldContent.split(':', 2)
-    setPolicyDetail((prevState) => ({
-      ...prevState,
-      spec: {
-        ...prevState.spec,
-        podSelector: {
-          ...prevState.spec.podSelector,
-          matchLabels: {
-            ...prevState.spec.podSelector.matchLabels,
-            [key]: value,
-          },
+    const portValidator = /\d+/
+    const selectorValidator = /\w+:\w+/
+    if (
+      !selectorValidator.test(namespaceSelector) &&
+      namespaceSelector !== ''
+    ) {
+      setErrorBarContent('Namespace Selector is Invalid')
+      setErrorBarContent(true)
+    } else if (!selectorValidator.test(podSelector)) {
+      setErrorBarContent('Pod Selector is Invalid')
+      setErrorBarContent(true)
+    } else if (!portValidator.test(port) && port !== '') {
+      setErrorBarContent('Port is Invalid')
+      setErrorBarContent(true)
+    } else {
+      const [nsKey, nsValue] = namespaceSelector.split(':', 2)
+      const [podKey, podValue] = podSelector.split(':', 2)
+      setPolicyDetail((prevState) => ({
+        ...prevState,
+        spec: {
+          ...prevState.spec,
+          ingress: [
+            ...prevState.spec.ingress,
+            {
+              from: [
+                {
+                  ...(namespaceSelector && {
+                    namespaceSelector: {
+                      matchLabels: {
+                        [nsKey]: nsValue,
+                      },
+                    },
+                  }),
+                  podSelector: {
+                    matchLabels: {
+                      [podKey]: podValue,
+                    },
+                  },
+                },
+              ],
+              ...(port && {
+                ports: [
+                  {
+                    port: port,
+                  },
+                ],
+              }),
+            },
+          ],
         },
-      },
-    }))
-    handleClose()
+      }))
+      handleClose()
+    }
   }
   const handleClose = () => {
     setOpenDialog(false)
@@ -94,8 +146,14 @@ export default ({ data }) => {
   useEffect(() => {
     console.log(policyDetail)
   }, [policyDetail])
-  const handleChangeText = (event) => {
-    setFieldContent(event.target.value)
+  const handleNamespaceSelectorChange = (event) => {
+    setNamespaceSelector(event.target.value)
+  }
+  const handlePodSelectorChange = (event) => {
+    setPodSelector(event.target.value)
+  }
+  const handlePortChange = (event) => {
+    setPort(event.target.value)
   }
   const renderNamespace = (ingressItem) => {
     return (
@@ -158,7 +216,7 @@ export default ({ data }) => {
                 <Typography
                   className={classes.resize}
                   key={item.port}
-                >{`${item.port}/${item.protocol}`}</Typography>
+                >{`:${item.port}`}</Typography>
               )
             })}
           </Box>
@@ -238,23 +296,62 @@ export default ({ data }) => {
         BackdropProps={{ style: { backgroundColor: 'transparent' } }}
         disableBackdropClick={false}
       >
-        <DialogTitle id='alert-dialog-title'>Add Node Selector</DialogTitle>
+        <DialogTitle id='add-dialog-title'>Add Ingress</DialogTitle>
         <DialogContent>
-          <Box display='flex' flexDirection='row' justifyContent='center'>
-            <TextField
-              autoFocus
-              placeholder='app:example'
-              variant='outlined'
-              size='small'
-              margin='none'
-              onChange={handleChangeText}
-              InputProps={{
-                classes: {
-                  input: classes.resize,
-                },
-              }}
-            />
-          </Box>
+          <Typography className={classes.resizeTitle}>
+            {'Namespace Selector'}
+          </Typography>
+          <TextField
+            autoFocus
+            placeholder='team:analysis'
+            variant='outlined'
+            size='small'
+            margin='none'
+            onChange={handleNamespaceSelectorChange}
+            InputProps={{
+              classes: {
+                input: classes.resize,
+              },
+            }}
+          />
+          <Typography className={classes.resizeTitle}>
+            {'Pod Selector'}
+          </Typography>
+          <TextField
+            placeholder='component:ui'
+            variant='outlined'
+            size='small'
+            margin='none'
+            onChange={handlePodSelectorChange}
+            InputProps={{
+              classes: {
+                input: classes.resize,
+              },
+            }}
+          />
+          <Typography className={classes.resizeTitle}>{'Port'}</Typography>
+
+          <TextField
+            placeholder='443'
+            variant='outlined'
+            size='small'
+            margin='none'
+            onChange={handlePortChange}
+            InputProps={{
+              classes: {
+                input: classes.resize,
+              },
+            }}
+          />
+          <Snackbar
+            open={errorBar}
+            autoHideDuration={3000}
+            onClose={handleCloseErrorBar}
+          >
+            <Alert onClose={handleCloseErrorBar} severity='error'>
+              {errorBarContent}
+            </Alert>
+          </Snackbar>
         </DialogContent>
         <DialogActions>
           <Button

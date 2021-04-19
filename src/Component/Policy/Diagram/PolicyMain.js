@@ -53,7 +53,6 @@ export default function PolicyMain({ data }) {
   const policyDetail = data.policyDetail
   const setPolicyDetail = data.setPolicyDetail
   const [openDialog, setOpenDialog] = useState(false)
-  const [selectorList, setSelectorList] = useState([])
   const [fieldContent, setFieldContent] = useState('')
   const handleAddClicked = (event) => {
     setOpenDialog(true)
