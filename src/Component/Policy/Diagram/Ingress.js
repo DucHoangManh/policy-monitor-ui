@@ -1,4 +1,4 @@
-import ReactFlow, { Handle } from 'react-flow-renderer'
+import { Handle } from 'react-flow-renderer'
 import AddIcon from '@material-ui/icons/AddCircleOutlineOutlined'
 import CodeIcon from '@material-ui/icons/Code'
 import DeleteIcon from '@material-ui/icons/HighlightOff'
@@ -7,8 +7,6 @@ import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
-import DialogContentText from '@material-ui/core/DialogContentText'
-import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import { useState } from 'react'
 import {
@@ -31,10 +29,8 @@ const useStyles = makeStyles({
     transform: 'scale(0.8)',
   },
   title: {
-    fontSize: 12,
-  },
-  bigTitle: {
     fontSize: 14,
+    fontWeight: 700,
   },
   pos: {
     marginBottom: 12,
@@ -47,6 +43,7 @@ const useStyles = makeStyles({
   },
   resizeTitle: {
     fontSize: 13,
+    fontWeight: 600,
   },
   resize: {
     fontSize: 12,
@@ -82,20 +79,21 @@ export default ({ data }) => {
   const handleClose = () => {
     setOpenDialog(false)
   }
-  const handleDelete = (key) => {
-    const { [key]: value, ...rest } = policyDetail.spec.podSelector.matchLabels
-    setPolicyDetail((prevState) => ({
-      ...prevState,
-      spec: {
-        ...prevState.spec,
-        podSelector: {
-          ...prevState.spec.podSelector,
-          matchLabels: rest,
+  const handleDelete = (index) => {
+    setPolicyDetail((prevState) => {
+      prevState.spec.ingress.splice(index, 1)
+      return {
+        ...prevState,
+        spec: {
+          ...prevState.spec,
+          ingress: prevState.spec.ingress,
         },
-      },
-    }))
+      }
+    })
   }
-
+  useEffect(() => {
+    console.log(policyDetail)
+  }, [policyDetail])
   const handleChangeText = (event) => {
     setFieldContent(event.target.value)
   }
@@ -146,7 +144,6 @@ export default ({ data }) => {
     )
   }
   const renderPort = (ingressItem) => {
-    console.log(ingressItem.ports)
     return (
       ingressItem.ports && (
         <>
@@ -155,13 +152,13 @@ export default ({ data }) => {
           </Typography>
 
           <Divider light={true} variant='middle' />
-          <Box display='flex' flexDirection='row'>
+          <Box>
             {ingressItem.ports.map((item) => {
               return (
                 <Typography
                   className={classes.resize}
                   key={item.port}
-                >{`:${item.port}`}</Typography>
+                >{`${item.port}/${item.protocol}`}</Typography>
               )
             })}
           </Box>
@@ -194,7 +191,10 @@ export default ({ data }) => {
                 edge='end'
                 size='small'
               >
-                <DeleteIcon className={classes.title} />
+                <DeleteIcon
+                  style={{ fill: '#f44336' }}
+                  className={classes.title}
+                />
               </IconButton>
             </Box>
             <Box my={1} />
@@ -222,11 +222,11 @@ export default ({ data }) => {
         alignItems='center'
       >
         <Box display='flex' justifyContent='start' alignItems='center'>
-          <CodeIcon className={classes.bigTitle} />
-          <Typography className={classes.bigTitle}>{'Ingress'}</Typography>
+          <CodeIcon />
+          <Typography className={classes.title}>{'Ingress'}</Typography>
         </Box>
         <IconButton edge='end' size='small' onClick={handleAddClicked}>
-          <AddIcon className={classes.title} />
+          <AddIcon style={{ fill: '#4caf50' }} className={classes.title} />
         </IconButton>
       </Box>
       <Divider />

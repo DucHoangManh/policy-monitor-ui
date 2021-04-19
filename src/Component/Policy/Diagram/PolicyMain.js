@@ -1,4 +1,4 @@
-import ReactFlow, { Handle } from 'react-flow-renderer'
+import { Handle } from 'react-flow-renderer'
 import AddIcon from '@material-ui/icons/AddCircleOutlineOutlined'
 import CodeIcon from '@material-ui/icons/Code'
 import DeleteIcon from '@material-ui/icons/HighlightOff'
@@ -7,8 +7,7 @@ import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
-import DialogContentText from '@material-ui/core/DialogContentText'
-import ClickAwayListener from '@material-ui/core/ClickAwayListener'
+
 import DialogTitle from '@material-ui/core/DialogTitle'
 import { useState } from 'react'
 import {
@@ -18,7 +17,6 @@ import {
   IconButton,
   Divider,
   TextField,
-  Input,
 } from '@material-ui/core'
 import { useEffect } from 'react'
 const useStyles = makeStyles({
@@ -31,7 +29,8 @@ const useStyles = makeStyles({
     transform: 'scale(0.8)',
   },
   title: {
-    fontSize: 12,
+    fontSize: 14,
+    fontWeight: 700,
   },
   bigTitle: {
     fontSize: 14,
@@ -49,7 +48,7 @@ const useStyles = makeStyles({
     fontSize: 12,
   },
 })
-export default ({ data }) => {
+export default function PolicyMain({ data }) {
   const classes = useStyles()
   const policyDetail = data.policyDetail
   const setPolicyDetail = data.setPolicyDetail
@@ -115,7 +114,7 @@ export default ({ data }) => {
           </Typography>
 
           <IconButton onClick={() => handleDelete(key)} edge='end' size='small'>
-            <DeleteIcon className={classes.title} />
+            <DeleteIcon style={{ fill: '#f44336' }} className={classes.title} />
           </IconButton>
         </Box>
       ))
@@ -139,12 +138,17 @@ export default ({ data }) => {
         justifyContent='space-between'
         alignItems='center'
       >
-        <Box display='flex' justifyContent='start' alignItems='center'>
-          <CodeIcon className={classes.bigTitle} />
+        <Box
+          fontWeight='fontWeightBold'
+          display='flex'
+          justifyContent='start'
+          alignItems='center'
+        >
+          <CodeIcon />
           <Typography className={classes.title}>{'Pod Selector'}</Typography>
         </Box>
         <IconButton edge='end' size='small' onClick={handleAddClicked}>
-          <AddIcon className={classes.title} />
+          <AddIcon style={{ color: '#4caf50' }} className={classes.title} />
         </IconButton>
       </Box>
       <Divider />

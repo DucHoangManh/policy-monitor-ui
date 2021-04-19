@@ -16,10 +16,6 @@ import API from '../../Apis/policyRequest'
 import Title from './Title'
 import { IconButton } from '@material-ui/core'
 
-function preventDefault(event) {
-  event.preventDefault()
-}
-
 const useStyles = makeStyles((theme) => ({
   seeMore: {
     marginTop: theme.spacing(3),

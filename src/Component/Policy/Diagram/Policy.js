@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import ReactFlow from 'react-flow-renderer'
 import PolicyMain from './PolicyMain'
 import Ingress from './Ingress'
-export default ({ policyDetail, setPolicyDetail }) => {
+export default function Policy({ policyDetail, setPolicyDetail }) {
   const elements = [
     {
       id: '1',
@@ -10,7 +10,7 @@ export default ({ policyDetail, setPolicyDetail }) => {
       targetPosition: 'left',
       data: { policyDetail: policyDetail, setPolicyDetail: setPolicyDetail },
       type: 'ingress',
-      position: { x: 200, y: 25 },
+      position: { x: 100, y: 25 },
     },
     {
       id: '2',
@@ -19,7 +19,7 @@ export default ({ policyDetail, setPolicyDetail }) => {
       targetPosition: 'left',
       data: { policyDetail: policyDetail, setPolicyDetail: setPolicyDetail },
       type: 'main',
-      position: { x: 500, y: 125 },
+      position: { x: 400, y: 125 },
     },
     {
       id: '3',
@@ -27,7 +27,7 @@ export default ({ policyDetail, setPolicyDetail }) => {
       sourcePosition: 'right',
       targetPosition: 'left',
       data: { label: 'Output Node' },
-      position: { x: 725, y: 250 },
+      position: { x: 700, y: 25 },
       animated: true,
     },
     { id: 'e1-2', source: '1', target: '2', animated: true },
