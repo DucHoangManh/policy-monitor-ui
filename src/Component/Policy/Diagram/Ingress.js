@@ -18,6 +18,7 @@ import {
   Divider,
   TextField,
   Snackbar,
+  Tooltip,
 } from '@material-ui/core'
 import MuiAlert from '@material-ui/lab/Alert'
 import { useEffect } from 'react'
@@ -52,7 +53,7 @@ const useStyles = makeStyles({
   },
 })
 function Alert(props) {
-  return <MuiAlert elevation={6} variant='outlined' {...props} />
+  return <MuiAlert elevation={6} variant='filled' {...props} />
 }
 export default ({ data }) => {
   const classes = useStyles()
@@ -63,7 +64,7 @@ export default ({ data }) => {
   const [podSelector, setPodSelector] = useState('')
   const [port, setPort] = useState('')
   const [errorBar, setErrorBar] = useState(false)
-  const [errorBarContent, setErrorBarContent] = useState(false)
+  const [errorBarContent, setErrorBarContent] = useState('')
   const handleAddClicked = (event) => {
     setNamespaceSelector('')
     setPodSelector('')
@@ -71,7 +72,7 @@ export default ({ data }) => {
     setOpenDialog(true)
   }
   const handleCloseErrorBar = () => {
-    setErrorBar = false
+    setErrorBar(false)
   }
   const handleAdd = (event) => {
     const portValidator = /\d+/
@@ -81,13 +82,13 @@ export default ({ data }) => {
       namespaceSelector !== ''
     ) {
       setErrorBarContent('Namespace Selector is Invalid')
-      setErrorBarContent(true)
+      setErrorBar(true)
     } else if (!selectorValidator.test(podSelector)) {
       setErrorBarContent('Pod Selector is Invalid')
-      setErrorBarContent(true)
+      setErrorBar(true)
     } else if (!portValidator.test(port) && port !== '') {
       setErrorBarContent('Port is Invalid')
-      setErrorBarContent(true)
+      setErrorBar(true)
     } else {
       const [nsKey, nsValue] = namespaceSelector.split(':', 2)
       const [podKey, podValue] = podSelector.split(':', 2)
@@ -159,10 +160,14 @@ export default ({ data }) => {
     return (
       ingressItem.from[0].namespaceSelector && (
         <>
-          <Typography className={classes.resizeTitle}>
-            {'Namespace Selector'}
-          </Typography>
-
+          <Tooltip
+            arrow
+            title='Only pods in matched namespace are affected by this Network Policy'
+          >
+            <Typography className={classes.resizeTitle}>
+              {'Namespace Selector'}
+            </Typography>
+          </Tooltip>
           <Divider light={true} variant='middle' />
           {Object.keys(ingressItem.from[0].namespaceSelector.matchLabels).map(
             (key) => {
@@ -182,10 +187,11 @@ export default ({ data }) => {
     return (
       ingressItem.from[0].podSelector && (
         <>
-          <Typography className={classes.resizeTitle}>
-            {'Pod Selector'}
-          </Typography>
-
+          <Tooltip arrow title='Allow Ingress access from matched pods'>
+            <Typography className={classes.resizeTitle}>
+              {'Pod Selector'}
+            </Typography>
+          </Tooltip>
           <Divider light={true} variant='middle' />
           {Object.keys(ingressItem.from[0].podSelector.matchLabels).map(
             (key) => {
@@ -205,10 +211,11 @@ export default ({ data }) => {
     return (
       ingressItem.ports && (
         <>
-          <Typography className={classes.resizeTitle}>
-            {'Port Allowed'}
-          </Typography>
-
+          <Tooltip arrow title='Allow Ingress access from port'>
+            <Typography className={classes.resizeTitle}>
+              {'Port Allowed'}
+            </Typography>
+          </Tooltip>
           <Divider light={true} variant='middle' />
           <Box>
             {ingressItem.ports.map((item) => {
@@ -244,16 +251,19 @@ export default ({ data }) => {
                 <Box my={1} />
                 {renderPort(ingressItem)}
               </Box>
-              <IconButton
-                onClick={() => handleDelete(index)}
-                edge='end'
-                size='small'
-              >
-                <DeleteIcon
-                  style={{ fill: '#f44336' }}
-                  className={classes.title}
-                />
-              </IconButton>
+
+              <Tooltip title='Delete this Ingress' arrow>
+                <IconButton
+                  onClick={() => handleDelete(index)}
+                  edge='end'
+                  size='small'
+                >
+                  <DeleteIcon
+                    style={{ fill: '#f44336' }}
+                    className={classes.title}
+                  />
+                </IconButton>
+              </Tooltip>
             </Box>
             <Box my={1} />
             <Divider />
@@ -279,13 +289,20 @@ export default ({ data }) => {
         justifyContent='space-between'
         alignItems='center'
       >
-        <Box display='flex' justifyContent='start' alignItems='center'>
-          <CodeIcon />
-          <Typography className={classes.title}>{'Ingress'}</Typography>
-        </Box>
-        <IconButton edge='end' size='small' onClick={handleAddClicked}>
-          <AddIcon style={{ fill: '#4caf50' }} className={classes.title} />
-        </IconButton>
+        <Tooltip
+          arrow
+          title='This section tells which Pods can access the main Pods from which Namespace, by which ports'
+        >
+          <Box display='flex' justifyContent='start' alignItems='center'>
+            <CodeIcon />
+            <Typography className={classes.title}>{'Ingress'}</Typography>
+          </Box>
+        </Tooltip>
+        <Tooltip arrow title='Add Ingress'>
+          <IconButton edge='end' size='small' onClick={handleAddClicked}>
+            <AddIcon style={{ fill: '#4caf50' }} className={classes.title} />
+          </IconButton>
+        </Tooltip>
       </Box>
       <Divider />
       {policyDetail.spec ? renderIngress() : 'loading'}
@@ -301,48 +318,60 @@ export default ({ data }) => {
           <Typography className={classes.resizeTitle}>
             {'Namespace Selector'}
           </Typography>
-          <TextField
-            autoFocus
-            placeholder='team:analysis'
-            variant='outlined'
-            size='small'
-            margin='none'
-            onChange={handleNamespaceSelectorChange}
-            InputProps={{
-              classes: {
-                input: classes.resize,
-              },
-            }}
-          />
+          <Tooltip arrow title='If leave blank, default to current Namespace'>
+            <TextField
+              autoFocus
+              placeholder='team:analysis'
+              variant='outlined'
+              size='small'
+              margin='none'
+              onChange={handleNamespaceSelectorChange}
+              InputProps={{
+                classes: {
+                  input: classes.resize,
+                },
+              }}
+            />
+          </Tooltip>
           <Typography className={classes.resizeTitle}>
             {'Pod Selector'}
           </Typography>
-          <TextField
-            placeholder='component:ui'
-            variant='outlined'
-            size='small'
-            margin='none'
-            onChange={handlePodSelectorChange}
-            InputProps={{
-              classes: {
-                input: classes.resize,
-              },
-            }}
-          />
+          <Tooltip
+            arrow
+            title='Allow access from matched Pods, must be specific'
+          >
+            <TextField
+              placeholder='app:ui'
+              variant='outlined'
+              size='small'
+              margin='none'
+              onChange={handlePodSelectorChange}
+              InputProps={{
+                classes: {
+                  input: classes.resize,
+                },
+              }}
+            />
+          </Tooltip>
           <Typography className={classes.resizeTitle}>{'Port'}</Typography>
 
-          <TextField
-            placeholder='443'
-            variant='outlined'
-            size='small'
-            margin='none'
-            onChange={handlePortChange}
-            InputProps={{
-              classes: {
-                input: classes.resize,
-              },
-            }}
-          />
+          <Tooltip
+            arrow
+            title='Can be leave blank to allow access from all ports'
+          >
+            <TextField
+              placeholder='443'
+              variant='outlined'
+              size='small'
+              margin='none'
+              onChange={handlePortChange}
+              InputProps={{
+                classes: {
+                  input: classes.resize,
+                },
+              }}
+            />
+          </Tooltip>
           <Snackbar
             open={errorBar}
             autoHideDuration={3000}

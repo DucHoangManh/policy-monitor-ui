@@ -17,6 +17,7 @@ import {
   IconButton,
   Divider,
   TextField,
+  Tooltip,
 } from '@material-ui/core'
 import { useEffect } from 'react'
 const useStyles = makeStyles({
@@ -112,9 +113,18 @@ export default function PolicyMain({ data }) {
             {`${key}:${policyDetail.spec.podSelector.matchLabels[key]}`}
           </Typography>
 
-          <IconButton onClick={() => handleDelete(key)} edge='end' size='small'>
-            <DeleteIcon style={{ fill: '#f44336' }} className={classes.title} />
-          </IconButton>
+          <Tooltip arrow title='Delete this Node Selector'>
+            <IconButton
+              onClick={() => handleDelete(key)}
+              edge='end'
+              size='small'
+            >
+              <DeleteIcon
+                style={{ fill: '#f44336' }}
+                className={classes.title}
+              />
+            </IconButton>
+          </Tooltip>
         </Box>
       ))
     )
@@ -137,18 +147,25 @@ export default function PolicyMain({ data }) {
         justifyContent='space-between'
         alignItems='center'
       >
-        <Box
-          fontWeight='fontWeightBold'
-          display='flex'
-          justifyContent='start'
-          alignItems='center'
+        <Tooltip
+          arrow
+          title='Pods matched by Pod Selectors are main Pods that affected by this Network Policy'
         >
-          <CodeIcon />
-          <Typography className={classes.title}>{'Pod Selector'}</Typography>
-        </Box>
-        <IconButton edge='end' size='small' onClick={handleAddClicked}>
-          <AddIcon style={{ color: '#4caf50' }} className={classes.title} />
-        </IconButton>
+          <Box
+            fontWeight='fontWeightBold'
+            display='flex'
+            justifyContent='start'
+            alignItems='center'
+          >
+            <CodeIcon />
+            <Typography className={classes.title}>{'Pod Selector'}</Typography>
+          </Box>
+        </Tooltip>
+        <Tooltip arrow title='Add Node Selector'>
+          <IconButton edge='end' size='small' onClick={handleAddClicked}>
+            <AddIcon style={{ color: '#4caf50' }} className={classes.title} />
+          </IconButton>
+        </Tooltip>
       </Box>
       <Divider />
       {policyDetail.spec ? renderNodeSelectors() : 'loading'}
