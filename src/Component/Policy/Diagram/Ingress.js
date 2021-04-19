@@ -93,35 +93,34 @@ export default ({ data }) => {
         ...prevState,
         spec: {
           ...prevState.spec,
-          ingress:
-            [
-              ...(prevState.spec.ingress ? [...prevState.spec.ingress] : []),
-              {
-                from: [
-                  {
-                    ...(namespaceSelector && {
-                      namespaceSelector: {
-                        matchLabels: {
-                          [nsKey]: nsValue,
-                        },
-                      },
-                    }),
-                    podSelector: {
+          ingress: [
+            ...(prevState.spec.ingress ? [...prevState.spec.ingress] : []),
+            {
+              from: [
+                {
+                  ...(namespaceSelector && {
+                    namespaceSelector: {
                       matchLabels: {
-                        [podKey]: podValue,
+                        [nsKey]: nsValue,
                       },
+                    },
+                  }),
+                  podSelector: {
+                    matchLabels: {
+                      [podKey]: podValue,
                     },
                   },
+                },
+              ],
+              ...(port && {
+                ports: [
+                  {
+                    port: port,
+                  },
                 ],
-                ...(port && {
-                  ports: [
-                    {
-                      port: port,
-                    },
-                  ],
-                }),
-              },
-            ] || [],
+              }),
+            },
+          ],
         },
       }))
       handleClose()

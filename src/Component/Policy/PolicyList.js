@@ -6,7 +6,7 @@ import Table from '@material-ui/core/Table'
 import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
-import TableRow from '@material-ui/core/TableRow'
+import { TableRow, Fab, Box } from '@material-ui/core'
 import DeleteIcon from '@material-ui/icons/DeleteForeverOutlined'
 import OpenIcon from '@material-ui/icons/OpenInNewOutlined'
 import AddIcon from '@material-ui/icons/AddCircleOutlineOutlined'
@@ -76,13 +76,12 @@ export default function PolicyList() {
                   )}
                 </TableCell>
                 <TableCell padding='checkbox'>
-                  {policyContext.allowUpdate && (
-                    <IconButton
-                      onClick={(event) => handleDeleteClicked(event, index)}
-                    >
-                      <DeleteIcon />
-                    </IconButton>
-                  )}
+                  <IconButton
+                    onClick={(event) => handleDeleteClicked(event, index)}
+                    disabled={!policyContext.allowUpdate}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
                 </TableCell>
                 <TableCell align='right' padding='checkbox'>
                   <IconButton
@@ -98,12 +97,18 @@ export default function PolicyList() {
           </TableBody>
         </Table>
       </TableContainer>
-      <div className={classes.seeMore}>
-        <IconButton>
-          Add
-          <AddIcon />
-        </IconButton>
-      </div>
+      <Box m={1} display='flex' flexDirection='row' justifyContent='flex-end'>
+        <Fab
+          variant='extended'
+          size='small'
+          aria-label='update'
+          style={{ backgroundColor: '#81c784', margin: 1 }}
+          disabled={!policyContext.allowUpdate}
+        >
+          <AddIcon style={{ marginRight: 2 }} />
+          ADD
+        </Fab>
+      </Box>
     </React.Fragment>
   )
 }

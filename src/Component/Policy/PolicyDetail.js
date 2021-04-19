@@ -36,11 +36,9 @@ export default function PolicyDetail() {
     fetchData()
   }, [])
   return (
-    <>
+    <div style={{ height: 490 }}>
       <Title content={navigator} />
-      <Paper>
-        <Policy policyDetail={policyDetail} setPolicyDetail={setPolicyDetail} />
-      </Paper>
-    </>
+      <Policy policyDetail={policyDetail} setPolicyDetail={setPolicyDetail} />
+    </div>
   )
 }

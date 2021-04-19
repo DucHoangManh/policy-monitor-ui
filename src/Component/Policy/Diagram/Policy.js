@@ -1,8 +1,29 @@
-import React from 'react'
+import React, { useContext, useState } from 'react'
+import { makeStyles } from '@material-ui/core/styles'
 import ReactFlow from 'react-flow-renderer'
+import { useHistory } from 'react-router-dom'
 import PolicyMain from './PolicyMain'
 import Ingress from './Ingress'
 import Engress from './Engress'
+import AddIcon from '@material-ui/icons/AddCircleOutlineOutlined'
+import DeleteIcon from '@material-ui/icons/Delete'
+import UpdateIcon from '@material-ui/icons/Update'
+import Dialog from '@material-ui/core/Dialog'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogContentText from '@material-ui/core/DialogContentText'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import { Fab, Box, Paper, Button } from '@material-ui/core'
+import { PolicyContext } from '../../../Context/policyContext'
+import API from '../../../Apis/policyRequest'
+const useStyles = makeStyles((theme) => ({
+  margin: {
+    margin: theme.spacing(1),
+  },
+  extendedIcon: {
+    marginRight: theme.spacing(1),
+  },
+}))
 export default function Policy({ policyDetail, setPolicyDetail }) {
   const elements = [
     {
@@ -15,7 +36,6 @@ export default function Policy({ policyDetail, setPolicyDetail }) {
     },
     {
       id: '2',
-      // you can also pass a React component as a label
       sourcePosition: 'right',
       targetPosition: 'left',
       data: { policyDetail: policyDetail, setPolicyDetail: setPolicyDetail },
@@ -39,14 +59,87 @@ export default function Policy({ policyDetail, setPolicyDetail }) {
     ingress: Ingress,
     engress: Engress,
   }
+  const classes = useStyles()
+  const [policyContext] = useContext(PolicyContext)
+  const [open, setOpen] = useState(false)
+  const history = useHistory()
+  const handleClose = () => {
+    setOpen(false)
+  }
+  const handleDelete = () => {
+    API.delete(
+      `/${policyContext.currentNamespace}/policy/by_name/${policyDetail.metadata.name}`,
+      {
+        params: {
+          version: policyContext.currentVersion,
+        },
+      }
+    ).then((res) => {
+      console.log(res)
+      history.push('/policy')
+    })
+
+    handleClose()
+  }
 
   return (
-    <div style={{ height: 400 }}>
-      <ReactFlow
-        elements={elements}
-        nodeTypes={nodeTypes}
-        nodesDraggable={true}
-      />
-    </div>
+    <Paper>
+      <div style={{ height: 410 }}>
+        <ReactFlow
+          elements={elements}
+          nodeTypes={nodeTypes}
+          nodesDraggable={true}
+        />
+
+        <Box display='flex' flexDirection='row' justifyContent='flex-end'>
+          <Fab
+            variant='extended'
+            size='small'
+            aria-label='update'
+            className={classes.margin}
+            style={{ backgroundColor: '#ffb74d' }}
+            disabled={!policyContext.allowUpdate}
+          >
+            <AddIcon className={classes.extendedIcon} />
+            UPDATE
+          </Fab>
+          <Fab
+            variant='extended'
+            size='small'
+            aria-label='update'
+            className={classes.margin}
+            style={{ backgroundColor: '#f44336' }}
+            disabled={!policyContext.allowUpdate}
+            onClick={() => {
+              setOpen(true)
+            }}
+          >
+            <DeleteIcon className={classes.extendedIcon} />
+            DELETE
+          </Fab>
+        </Box>
+      </div>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle>{'Confirm Delete'}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id='alert-dialog-description'>
+            Are you sure want to delete this Network Policy?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDelete} color='primary'>
+            Delete
+          </Button>
+          <Button onClick={handleClose} color='primary' autoFocus>
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </Paper>
   )
 }
