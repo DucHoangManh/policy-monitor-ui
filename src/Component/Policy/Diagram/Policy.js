@@ -2,6 +2,7 @@ import React from 'react'
 import ReactFlow from 'react-flow-renderer'
 import PolicyMain from './PolicyMain'
 import Ingress from './Ingress'
+import Engress from './Engress'
 export default function Policy({ policyDetail, setPolicyDetail }) {
   const elements = [
     {
@@ -23,10 +24,10 @@ export default function Policy({ policyDetail, setPolicyDetail }) {
     },
     {
       id: '3',
-      type: 'output',
+      type: 'engress',
       sourcePosition: 'right',
       targetPosition: 'left',
-      data: { label: 'Output Node' },
+      data: { policyDetail: policyDetail, setPolicyDetail: setPolicyDetail },
       position: { x: 700, y: 25 },
       animated: true,
     },
@@ -36,6 +37,7 @@ export default function Policy({ policyDetail, setPolicyDetail }) {
   const nodeTypes = {
     main: PolicyMain,
     ingress: Ingress,
+    engress: Engress,
   }
 
   return (

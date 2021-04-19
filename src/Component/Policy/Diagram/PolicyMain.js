@@ -7,7 +7,7 @@ import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
-
+import Alert from '../../Alert'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import { useState } from 'react'
 import {
@@ -18,6 +18,7 @@ import {
   Divider,
   TextField,
   Tooltip,
+  Snackbar,
 } from '@material-ui/core'
 import { useEffect } from 'react'
 const useStyles = makeStyles({
@@ -55,10 +56,21 @@ export default function PolicyMain({ data }) {
   const setPolicyDetail = data.setPolicyDetail
   const [openDialog, setOpenDialog] = useState(false)
   const [fieldContent, setFieldContent] = useState('')
+  const [errorBar, setErrorBar] = useState(false)
+  const [errorBarContent, setErrorBarContent] = useState('')
   const handleAddClicked = (event) => {
     setOpenDialog(true)
   }
+  const handleCloseErrorBar = () => {
+    setErrorBar(false)
+  }
   const handleAdd = (event) => {
+    const selectorValidator = /^\w+:\w+$/
+    if (!selectorValidator.test(fieldContent)) {
+      setErrorBarContent('Pod Selector is Invalid')
+      setErrorBar(true)
+      return
+    }
     const [key, value] = fieldContent.split(':', 2)
     setPolicyDetail((prevState) => ({
       ...prevState,
@@ -95,9 +107,9 @@ export default function PolicyMain({ data }) {
   const handleChangeText = (event) => {
     setFieldContent(event.target.value)
   }
-  // useEffect(() => {
-  //   policyDetail.spec && console.log(policyDetail.spec.podSelector.matchLabels)
-  // }, [policyDetail])
+  useEffect(() => {
+    policyDetail.spec && console.log(policyDetail.spec)
+  }, [policyDetail])
   const renderNodeSelectors = () => {
     return (
       policyDetail.spec.podSelector.matchLabels &&
@@ -131,7 +143,7 @@ export default function PolicyMain({ data }) {
   }
 
   return (
-    <Paper style={{ minWidth: 150 }} variant='outlined'>
+    <Paper style={{ minWidth: 150 }} elevation={3}>
       <Handle type='target' position='left' style={{ background: '#555' }} />
       <Handle
         type='source'
@@ -193,6 +205,15 @@ export default function PolicyMain({ data }) {
               }}
             />
           </Box>
+          <Snackbar
+            open={errorBar}
+            autoHideDuration={3000}
+            onClose={handleCloseErrorBar}
+          >
+            <Alert onClose={handleCloseErrorBar} severity='error'>
+              {errorBarContent}
+            </Alert>
+          </Snackbar>
         </DialogContent>
         <DialogActions>
           <Button

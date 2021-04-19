@@ -1,13 +1,14 @@
 import { Handle } from 'react-flow-renderer'
 import AddIcon from '@material-ui/icons/AddCircleOutlineOutlined'
+
 import DeleteIcon from '@material-ui/icons/HighlightOff'
-import OpenInIcon from '@material-ui/icons/OpenInBrowser'
+import OutIcon from '@material-ui/icons/DeveloperMode'
 import { makeStyles } from '@material-ui/core/styles'
 import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
-import Radio from '@material-ui/core/Radio'
+
 import DialogTitle from '@material-ui/core/DialogTitle'
 import { useState } from 'react'
 import {
@@ -93,35 +94,34 @@ export default ({ data }) => {
         ...prevState,
         spec: {
           ...prevState.spec,
-          ingress:
-            [
-              ...(prevState.spec.ingress ? [...prevState.spec.ingress] : []),
-              {
-                from: [
-                  {
-                    ...(namespaceSelector && {
-                      namespaceSelector: {
-                        matchLabels: {
-                          [nsKey]: nsValue,
-                        },
-                      },
-                    }),
-                    podSelector: {
+          egress: [
+            ...(prevState.spec.egress ? [...prevState.spec.egress] : []),
+            {
+              to: [
+                {
+                  ...(namespaceSelector && {
+                    namespaceSelector: {
                       matchLabels: {
-                        [podKey]: podValue,
+                        [nsKey]: nsValue,
                       },
+                    },
+                  }),
+                  podSelector: {
+                    matchLabels: {
+                      [podKey]: podValue,
                     },
                   },
+                },
+              ],
+              ...(port && {
+                ports: [
+                  {
+                    port: port,
+                  },
                 ],
-                ...(port && {
-                  ports: [
-                    {
-                      port: port,
-                    },
-                  ],
-                }),
-              },
-            ] || [],
+              }),
+            },
+          ],
         },
       }))
       handleClose()
@@ -132,17 +132,16 @@ export default ({ data }) => {
   }
   const handleDelete = (index) => {
     setPolicyDetail((prevState) => {
-      prevState.spec.ingress.splice(index, 1)
+      prevState.spec.egress.splice(index, 1)
       return {
         ...prevState,
         spec: {
           ...prevState.spec,
-          ingress: prevState.spec.ingress,
+          egress: prevState.spec.egress,
         },
       }
     })
   }
-
   const handleNamespaceSelectorChange = (event) => {
     setNamespaceSelector(event.target.value)
   }
@@ -152,9 +151,9 @@ export default ({ data }) => {
   const handlePortChange = (event) => {
     setPort(event.target.value)
   }
-  const renderNamespace = (ingressItem) => {
+  const renderNamespace = (egressItem) => {
     return (
-      ingressItem.from[0].namespaceSelector && (
+      egressItem.to[0].namespaceSelector && (
         <>
           <Tooltip
             arrow
@@ -165,13 +164,13 @@ export default ({ data }) => {
             </Typography>
           </Tooltip>
           <Divider light={true} variant='middle' />
-          {Object.keys(ingressItem.from[0].namespaceSelector.matchLabels).map(
+          {Object.keys(egressItem.to[0].namespaceSelector.matchLabels).map(
             (key) => {
               return (
                 <Typography
                   key={key}
                   className={classes.resize}
-                >{`${key}:${ingressItem.from[0].namespaceSelector.matchLabels[key]}`}</Typography>
+                >{`${key}:${egressItem.to[0].namespaceSelector.matchLabels[key]}`}</Typography>
               )
             }
           )}
@@ -179,42 +178,40 @@ export default ({ data }) => {
       )
     )
   }
-  const renderPod = (ingressItem) => {
+  const renderPod = (egressItem) => {
     return (
-      ingressItem.from[0].podSelector && (
+      egressItem.to[0].podSelector && (
         <>
-          <Tooltip arrow title='Allow Ingress access from matched pods'>
+          <Tooltip arrow title='Allow Egress access to matched pods'>
             <Typography className={classes.resizeTitle}>
               {'Pod Selector'}
             </Typography>
           </Tooltip>
           <Divider light={true} variant='middle' />
-          {Object.keys(ingressItem.from[0].podSelector.matchLabels).map(
-            (key) => {
-              return (
-                <Typography
-                  key={key}
-                  className={classes.resize}
-                >{`${key}:${ingressItem.from[0].podSelector.matchLabels[key]}`}</Typography>
-              )
-            }
-          )}
+          {Object.keys(egressItem.to[0].podSelector.matchLabels).map((key) => {
+            return (
+              <Typography
+                key={key}
+                className={classes.resize}
+              >{`${key}:${egressItem.to[0].podSelector.matchLabels[key]}`}</Typography>
+            )
+          })}
         </>
       )
     )
   }
-  const renderPort = (ingressItem) => {
+  const renderPort = (egressItem) => {
     return (
-      ingressItem.ports && (
+      egressItem.ports && (
         <>
-          <Tooltip arrow title='Allow Ingress access from port'>
+          <Tooltip arrow title='Allow Egress access from port'>
             <Typography className={classes.resizeTitle}>
               {'Port Allowed'}
             </Typography>
           </Tooltip>
           <Divider light={true} variant='middle' />
           <Box>
-            {ingressItem.ports.map((item) => {
+            {egressItem.ports.map((item) => {
               return (
                 <Typography
                   className={classes.resize}
@@ -227,11 +224,10 @@ export default ({ data }) => {
       )
     )
   }
-  const renderIngress = () => {
-    //console.log(policyDetail)
+  const renderEgress = () => {
     return (
-      policyDetail.spec.ingress &&
-      policyDetail.spec.ingress.map((ingressItem, index) => {
+      policyDetail.spec.egress &&
+      policyDetail.spec.egress.map((egressItem, index) => {
         return (
           <Box key={index}>
             <Box
@@ -241,14 +237,14 @@ export default ({ data }) => {
               justifyContent='space-between'
             >
               <Box>
-                {renderNamespace(ingressItem)}
+                {renderNamespace(egressItem)}
                 <Box my={1} />
-                {renderPod(ingressItem)}
+                {renderPod(egressItem)}
                 <Box my={1} />
-                {renderPort(ingressItem)}
+                {renderPort(egressItem)}
               </Box>
 
-              <Tooltip title='Delete this Ingress rule' arrow>
+              <Tooltip title='Delete this Egress rule' arrow>
                 <IconButton
                   onClick={() => handleDelete(index)}
                   edge='end'
@@ -271,12 +267,7 @@ export default ({ data }) => {
 
   return (
     <Paper style={{ minWidth: 150 }} elevation={3}>
-      <Handle
-        type='source'
-        position='right'
-        style={{ background: '#555' }}
-        onConnect={(params) => console.log('handle onConnect', params)}
-      />
+      <Handle type='target' position='left' style={{ background: '#555' }} />
       <Box
         p={1}
         px={2}
@@ -287,21 +278,21 @@ export default ({ data }) => {
       >
         <Tooltip
           arrow
-          title='This section tells which Pods can access the main Pods from which Namespace, by which ports'
+          title='This section tells which Pods can be accessed from the main Pods, to which Namespace, by which ports'
         >
           <Box display='flex' justifyContent='start' alignItems='center'>
-            <OpenInIcon />
-            <Typography className={classes.title}>{'Ingress'}</Typography>
+            <OutIcon />
+            <Typography className={classes.title}>{'Egress'}</Typography>
           </Box>
         </Tooltip>
-        <Tooltip arrow title='Add Ingress rule'>
+        <Tooltip arrow title='Add Egress'>
           <IconButton edge='end' size='small' onClick={handleAddClicked}>
             <AddIcon style={{ fill: '#4caf50' }} className={classes.title} />
           </IconButton>
         </Tooltip>
       </Box>
       <Divider />
-      {policyDetail.spec ? renderIngress() : 'loading'}
+      {policyDetail.spec ? renderEgress() : 'loading'}
 
       <Dialog
         open={openDialog}
@@ -309,7 +300,7 @@ export default ({ data }) => {
         BackdropProps={{ style: { backgroundColor: 'transparent' } }}
         disableBackdropClick={false}
       >
-        <DialogTitle id='add-dialog-title'>Add Ingress</DialogTitle>
+        <DialogTitle id='add-dialog-title'>Add Egress rule</DialogTitle>
         <DialogContent>
           <Typography className={classes.resizeTitle}>
             {'Namespace Selector'}
@@ -332,10 +323,7 @@ export default ({ data }) => {
           <Typography className={classes.resizeTitle}>
             {'Pod Selector'}
           </Typography>
-          <Tooltip
-            arrow
-            title='Allow access from matched Pods, must be specific'
-          >
+          <Tooltip arrow title='Allow access to matched Pods, must be specific'>
             <TextField
               placeholder='app:ui'
               variant='outlined'
