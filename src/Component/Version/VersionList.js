@@ -30,7 +30,7 @@ export default function Orders() {
   return (
     <React.Fragment>
       <Title content={navigator}>&gt; Policy Version</Title>
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} style={{ maxHeight: 440 }}>
         <Table size='medium'>
           <TableHead>
             <TableRow>

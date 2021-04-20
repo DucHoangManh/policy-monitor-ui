@@ -13,9 +13,10 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
-import { Fab, Box, Paper, Button } from '@material-ui/core'
+import { Fab, Box, Paper, Button, Snackbar } from '@material-ui/core'
 import { PolicyContext } from '../../../Context/policyContext'
 import API from '../../../Apis/policyRequest'
+import Alert from '../../Alert'
 const useStyles = makeStyles((theme) => ({
   margin: {
     margin: theme.spacing(1),
@@ -62,9 +63,14 @@ export default function Policy({ policyDetail, setPolicyDetail }) {
   const classes = useStyles()
   const [policyContext] = useContext(PolicyContext)
   const [open, setOpen] = useState(false)
+  const [toast, setToast] = useState(false)
+  const [toastContent, setToastContent] = useState('')
   const history = useHistory()
   const handleClose = () => {
     setOpen(false)
+  }
+  const handleCloseToast = () => {
+    setToast(false)
   }
   const handleDelete = () => {
     API.delete(
@@ -75,11 +81,26 @@ export default function Policy({ policyDetail, setPolicyDetail }) {
         },
       }
     ).then((res) => {
-      console.log(res)
-      history.push('/policy')
+      if (res.status === 200) {
+        setToastContent('Network Policy deleted')
+        setToast(true)
+        setTimeout(() => {
+          history.push('/policy')
+        }, 1000)
+      }
     })
 
     handleClose()
+  }
+  const handleUpdateClicked = () => {
+    API.patch(`/${policyContext.currentNamespace}/policy/`, {
+      ...policyDetail,
+    }).then((res) => {
+      if (res.status === 200) {
+        setToastContent('Network Policy updated')
+        setToast(true)
+      }
+    })
   }
 
   return (
@@ -99,8 +120,9 @@ export default function Policy({ policyDetail, setPolicyDetail }) {
             className={classes.margin}
             style={{ backgroundColor: '#ffb74d' }}
             disabled={!policyContext.allowUpdate}
+            onClick={handleUpdateClicked}
           >
-            <AddIcon className={classes.extendedIcon} />
+            <UpdateIcon className={classes.extendedIcon} />
             UPDATE
           </Fab>
           <Fab
@@ -140,6 +162,11 @@ export default function Policy({ policyDetail, setPolicyDetail }) {
           </Button>
         </DialogActions>
       </Dialog>
+      <Snackbar open={toast} autoHideDuration={3000} onClose={handleCloseToast}>
+        <Alert onClose={handleCloseToast} severity='success'>
+          {toastContent}
+        </Alert>
+      </Snackbar>
     </Paper>
   )
 }

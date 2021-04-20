@@ -27,9 +27,6 @@ const useStyles = makeStyles((theme) => ({
 const handleDeleteClicked = (event, index) => {
   console.log(index)
 }
-const handleOpenClicked = (event, index) => {
-  console.log('Open clicked ' + index)
-}
 
 export default function PolicyList() {
   const classes = useStyles()
@@ -55,7 +52,7 @@ export default function PolicyList() {
   return (
     <React.Fragment>
       <Title content={navigator} />
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} style={{ maxHeight: 490 }}>
         <Table size='medium'>
           <TableHead>
             <TableRow>
@@ -85,7 +82,6 @@ export default function PolicyList() {
                 </TableCell>
                 <TableCell align='right' padding='checkbox'>
                   <IconButton
-                    onClick={(event) => handleOpenClicked(event, index)}
                     component={Link}
                     to={`/policy/${item.networkPolicy.metadata.name}`}
                   >
@@ -104,6 +100,8 @@ export default function PolicyList() {
           aria-label='update'
           style={{ backgroundColor: '#81c784', margin: 1 }}
           disabled={!policyContext.allowUpdate}
+          component={Link}
+          to={`/new/policy`}
         >
           <AddIcon style={{ marginRight: 2 }} />
           ADD

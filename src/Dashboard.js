@@ -23,6 +23,7 @@ import Policies from './Component/Policy/PolicyList'
 import PolicyDetail from './Component/Policy/PolicyDetail'
 import SelectNamespace from './Component/SelectNamespace'
 import SelectVersion from './Component/SelectVersion'
+import NewPolicy from './Component/Policy/Diagram/NewPolicy'
 import VersionList from './Component/Version/VersionList'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 function Copyright() {
@@ -101,7 +102,7 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'auto',
   },
   container: {
-    paddingTop: theme.spacing(3),
+    paddingTop: theme.spacing(1),
     paddingBottom: theme.spacing(2),
     paddingLeft: theme.spacing(1),
   },
@@ -196,6 +197,9 @@ export default function Dashboard() {
                   </Route>
                   <Route exact path='/version'>
                     <VersionList />
+                  </Route>
+                  <Route exact path='/new/policy'>
+                    <NewPolicy />
                   </Route>
                 </Switch>
               </Paper>

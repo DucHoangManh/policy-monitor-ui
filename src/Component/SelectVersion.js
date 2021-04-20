@@ -103,6 +103,7 @@ export default function SelectNamespace(props) {
         keepMounted
         open={Boolean(anchorEl)}
         onClose={handleClose}
+        PaperProps={{ style: { maxHeight: 200 } }}
       >
         {options.map((option, index) => {
           let op = ''
