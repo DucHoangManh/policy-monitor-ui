@@ -1,18 +1,16 @@
 import React, { useContext, useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import ReactFlow from 'react-flow-renderer'
-import { useHistory } from 'react-router-dom'
 import PolicyMain from './PolicyMain'
 import Ingress from './Ingress'
 import Engress from './Engress'
 import AddIcon from '@material-ui/icons/AddCircleOutlineOutlined'
-import DeleteIcon from '@material-ui/icons/Delete'
 import EditIcon from '@material-ui/icons/Edit'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
-import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
+import { useHistory } from 'react-router-dom'
 import {
   Fab,
   Box,
@@ -126,6 +124,9 @@ export default function NewPolicy() {
         console.log(res)
         setToastContent('New Network Policy created')
         setToast(true)
+        setTimeout(() => {
+          history.push('/')
+        }, 2000)
       }
     })
   }

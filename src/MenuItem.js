@@ -25,12 +25,6 @@ export const mainListItems = (
     </ListItem>
     <ListItem button>
       <ListItemIcon>
-        <BarChartIcon />
-      </ListItemIcon>
-      <ListItemText primary='Template' />
-    </ListItem>
-    <ListItem button>
-      <ListItemIcon>
         <LayersIcon />
       </ListItemIcon>
       <ListItemText primary='Visualize' />

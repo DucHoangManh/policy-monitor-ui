@@ -115,7 +115,7 @@ export default ({ data }) => {
               ...(port && {
                 ports: [
                   {
-                    port: port,
+                    port: parseInt(port),
                   },
                 ],
               }),
