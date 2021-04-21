@@ -23,7 +23,7 @@ export const mainListItems = (
       </ListItemIcon>
       <ListItemText primary='Version' />
     </ListItem>
-    <ListItem button>
+    <ListItem button component={Link} to={'/visualizer'}>
       <ListItemIcon>
         <LayersIcon />
       </ListItemIcon>

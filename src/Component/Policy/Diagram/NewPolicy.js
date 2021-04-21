@@ -35,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 13,
   },
 }))
+//TODO:verify policy before create
 //TODO:policy name must be lower case without space
 export default function NewPolicy() {
   const initState = {

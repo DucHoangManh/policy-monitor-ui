@@ -25,6 +25,7 @@ import SelectNamespace from './Component/SelectNamespace'
 import SelectVersion from './Component/SelectVersion'
 import NewPolicy from './Component/Policy/Diagram/NewPolicy'
 import VersionList from './Component/Version/VersionList'
+import Visualizer from './Component/Visualizer'
 import { BrowserRouter, Route, Switch } from 'react-router-dom'
 function Copyright() {
   return (
@@ -200,6 +201,9 @@ export default function Dashboard() {
                   </Route>
                   <Route exact path='/new/policy'>
                     <NewPolicy />
+                  </Route>
+                  <Route exact path='/visualizer'>
+                    <Visualizer />
                   </Route>
                 </Switch>
               </Paper>
