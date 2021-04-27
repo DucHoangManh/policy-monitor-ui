@@ -93,7 +93,11 @@ export default function NewPolicy() {
   const [policyName, setPolicyName] = useState('policy-name')
   const history = useHistory()
   const handlePolicyNameChange = (event) => {
-    setPolicyName(event.target.value)
+    setPolicyName(
+      `${
+        policyContext.currentNamespace
+      }.${event.target.value.toLowerCase().replace(/ +/g, '-')}`
+    )
   }
   const hanleConfirmPolicyNameChange = () => {
     if (policyName === '') {

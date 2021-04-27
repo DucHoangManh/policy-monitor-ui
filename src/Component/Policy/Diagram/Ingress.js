@@ -7,7 +7,6 @@ import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
-import Radio from '@material-ui/core/Radio'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import { useState } from 'react'
 import {
@@ -19,6 +18,7 @@ import {
   TextField,
   Snackbar,
   Tooltip,
+  Radio,
 } from '@material-ui/core'
 import Alert from '../../Alert'
 import { useEffect } from 'react'
@@ -62,6 +62,11 @@ export default ({ data }) => {
   const [port, setPort] = useState('')
   const [errorBar, setErrorBar] = useState(false)
   const [errorBarContent, setErrorBarContent] = useState('')
+
+  const [protocol, setProtocol] = useState('')
+  const handleProtocolChange = (event) => {
+    setProtocol(event.target.value)
+  }
   const handleAddClicked = (event) => {
     setNamespaceSelector('')
     setPodSelector('')
@@ -215,10 +220,9 @@ export default ({ data }) => {
           <Box>
             {ingressItem.ports.map((item) => {
               return (
-                <Typography
-                  className={classes.resize}
-                  key={item.port}
-                >{`:${item.port}`}</Typography>
+                <Typography className={classes.resize} key={item.port}>{`:${
+                  item.port
+                }${item.protocol ? `/${item.protocol}` : ''}`}</Typography>
               )
             })}
           </Box>
@@ -315,8 +319,7 @@ export default ({ data }) => {
           </Typography>
           <Tooltip arrow title='If leave blank, default to current Namespace'>
             <TextField
-              autoFocus
-              placeholder='team:analysis'
+              placeholder='namespace:monitor'
               variant='outlined'
               size='small'
               margin='none'
@@ -336,6 +339,7 @@ export default ({ data }) => {
             title='Allow access from matched Pods, must be specific'
           >
             <TextField
+              autoFocus
               placeholder='app:ui'
               variant='outlined'
               size='small'
@@ -367,6 +371,24 @@ export default ({ data }) => {
               }}
             />
           </Tooltip>
+          <Box display='flex' justifyContent='spaceBetween' alignItems='center'>
+            <Typography className={classes.resize} style={{ marginRight: 0 }}>
+              TCP
+            </Typography>
+            <Radio
+              checked={protocol === 'TCP'}
+              onChange={handleProtocolChange}
+              value='TCP'
+              name='protocol-select'
+            />
+            <Typography className={classes.resize}>UDP</Typography>
+            <Radio
+              checked={protocol === 'UDP'}
+              onChange={handleProtocolChange}
+              value='UDP'
+              name='protocol-select'
+            />
+          </Box>
           <Snackbar
             open={errorBar}
             autoHideDuration={3000}

@@ -14,7 +14,7 @@ import Paper from '@material-ui/core/Paper'
 import { PolicyContext } from '../../Context/policyContext'
 import API from '../../Apis/policyRequest'
 import Title from './Title'
-import { IconButton } from '@material-ui/core'
+import { IconButton, TextField } from '@material-ui/core'
 
 const useStyles = makeStyles((theme) => ({
   seeMore: {
@@ -24,25 +24,35 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-const handleDeleteClicked = (event, index) => {
-  console.log(index)
-}
-
 export default function PolicyList() {
   const classes = useStyles()
   const [policies, setPolicies] = useState([])
+  const [displayPolicies, setDisplayPolicices] = useState([])
   const [policyContext] = useContext(PolicyContext)
+  const fetchData = async () => {
+    const res = await API.get(`/${policyContext.currentNamespace}/policy/`, {
+      params: {
+        version: policyContext.currentVersion,
+      },
+    })
+    setPolicies(res.data)
+    setDisplayPolicices(res.data)
+  }
+  const handleDeleteClicked = (event, index) => {
+    console.log(index)
+  }
+  const handleSearchChange = (event) => {
+    const reg = new RegExp(event.target.value)
+    setDisplayPolicices(
+      policies.filter((item) => reg.test(item.networkPolicy.metadata.name))
+    )
+  }
   useEffect(() => {
-    const fetchData = async () => {
-      const res = await API.get(`/${policyContext.currentNamespace}/policy/`, {
-        params: {
-          version: policyContext.currentVersion,
-        },
-      })
-      setPolicies(res.data)
-    }
     fetchData()
   }, [policyContext])
+  useEffect(() => {
+    fetchData()
+  }, [])
   const navigator = [
     {
       display: 'Network Policy',
@@ -62,9 +72,20 @@ export default function PolicyList() {
                 Action
               </TableCell>
             </TableRow>
+            <TableRow>
+              <TableCell colSpan={3}>
+                <TextField
+                  placeholder='search networkpolicy...'
+                  variant='outlined'
+                  size='small'
+                  margin='none'
+                  onChange={handleSearchChange}
+                />
+              </TableCell>
+            </TableRow>
           </TableHead>
           <TableBody>
-            {policies.map((item, index) => (
+            {displayPolicies.map((item, index) => (
               <TableRow hover key={item.id}>
                 <TableCell>{item.networkPolicy.metadata.name}</TableCell>
                 <TableCell>

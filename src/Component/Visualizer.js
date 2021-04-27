@@ -9,7 +9,7 @@ const refactor = (obj) => {
     .replace(/{+/g, '')
     .replace(/}+/g, '')
     .replace(/:+/g, '=')
-    .replace(/,+/g, '\n')
+    .replace(/,+/g, '\\n')
     .replace(/['"]+/g, '')
 }
 export default function Visualizer() {
@@ -52,7 +52,7 @@ export default function Visualizer() {
 
     if (policies.length > 0) {
       let temp = 'stateDiagram-v2'
-      policies.map((policy) => {
+      policies.forEach((policy) => {
         const hasIngress = policy.spec.ingress ? true : false
         const hasEgress = policy.spec.egress ? true : false
         const hasPodSelector = policy.spec.podSelector.matchLabels
@@ -60,7 +60,7 @@ export default function Visualizer() {
           : false
         let ingresses = ''
         if (hasPodSelector && hasIngress) {
-          policy.spec.ingress.map((item) => {
+          policy.spec.ingress.forEach((item) => {
             ingresses += item.from[0].podSelector
               ? `${refactor(item.from[0].podSelector.matchLabels)}-->${refactor(
                   policy.spec.podSelector.matchLabels
@@ -70,7 +70,7 @@ export default function Visualizer() {
         }
         let egresses = ''
         if (hasPodSelector && hasEgress) {
-          policy.spec.egress.map((item) => {
+          policy.spec.egress.forEach((item) => {
             egresses += item.to[0].podSelector
               ? `${refactor(policy.spec.podSelector.matchLabels)}-->${refactor(
                   item.to[0].podSelector.matchLabels
