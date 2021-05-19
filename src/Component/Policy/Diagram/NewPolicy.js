@@ -94,9 +94,9 @@ export default function NewPolicy() {
   const history = useHistory()
   const handlePolicyNameChange = (event) => {
     setPolicyName(
-      `${
-        policyContext.currentNamespace
-      }.${event.target.value.toLowerCase().replace(/ +/g, '-')}`
+      `${policyContext.currentNamespace}.${event.target.value
+        .toLowerCase()
+        .replace(/ +/g, '-')}`
     )
   }
   const hanleConfirmPolicyNameChange = () => {
