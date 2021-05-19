@@ -118,17 +118,34 @@ export default ({ data }) => {
                 },
               ],
               ...(port && {
-                ports: [
-                  {
-                    port: parseInt(port),
-                  },
-                ],
+                ...(protocol === ''
+                  ? {
+                      ports: [
+                        {
+                          port: parseInt(port),
+                          protocol: 'TCP',
+                        },
+                        {
+                          port: parseInt(port),
+                          protocol: 'UDP',
+                        },
+                      ],
+                    }
+                  : {
+                      ports: [
+                        {
+                          port: parseInt(port),
+                          protocol: protocol,
+                        },
+                      ],
+                    }),
               }),
             },
           ],
         },
       }))
       handleClose()
+      setProtocol('')
     }
   }
   const handleClose = () => {
@@ -220,7 +237,7 @@ export default ({ data }) => {
           <Box>
             {ingressItem.ports.map((item) => {
               return (
-                <Typography className={classes.resize} key={item.port}>{`:${
+                <Typography className={classes.resize} key={item.protocol}>{`:${
                   item.port
                 }${item.protocol ? `/${item.protocol}` : ''}`}</Typography>
               )

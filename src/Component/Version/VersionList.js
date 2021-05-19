@@ -34,7 +34,7 @@ export default function Orders() {
         <Table size='medium'>
           <TableHead>
             <TableRow>
-              <TableCell>Name</TableCell>
+              <TableCell>Version</TableCell>
               <TableCell>Content</TableCell>
             </TableRow>
           </TableHead>
@@ -42,7 +42,7 @@ export default function Orders() {
             {versions.map((item, index) => (
               <TableRow hover key={item.id}>
                 <TableCell>
-                  {item.id + (item.latest ? '(latest)' : '')}
+                  {index + 1 + (item.latest ? '(latest)' : '')}
                 </TableCell>
                 <TableCell>{item.content}</TableCell>
               </TableRow>

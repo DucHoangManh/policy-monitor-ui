@@ -78,6 +78,7 @@ export default function Visualizer() {
               : ''
           })
         }
+
         temp += `\n${ingresses}\n${egresses}`
       })
       mermaid.render('visualizer', temp, (svgCode) => {

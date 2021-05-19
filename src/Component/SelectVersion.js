@@ -28,11 +28,17 @@ export default function SelectNamespace(props) {
   const [selectedIndex, setSelectedIndex] = React.useState(0)
   const [displayVersion, setDisplayVersion] = React.useState('latest')
   const history = useHistory()
+
+  const fetchDataEach = async () => {
+    const res = await API.get(`/version`)
+    setOptions(res.data)
+  }
   const handleClickListItem = (event) => {
+    fetchDataEach()
     setAnchorEl(event.currentTarget)
   }
-
   const handleMenuItemClick = (event, index) => {
+    console.log(options[index])
     setPolicyContext({
       ...policyContext,
       currentVersion: options[index].id,
@@ -54,7 +60,8 @@ export default function SelectNamespace(props) {
           allowUpdate: true,
         })
       } else {
-        setDisplayVersion(options[selectedIndex].id.substring(4, 9))
+        // setDisplayVersion(options[selectedIndex].id.substring(4, 9))
+        setDisplayVersion(selectedIndex + 1)
         setPolicyContext({
           ...policyContext,
           allowUpdate: false,
@@ -110,7 +117,7 @@ export default function SelectNamespace(props) {
           if (option.latest) {
             op = 'latest'
           } else {
-            op = option.id.substring(4, 9)
+            op = index + 1
           }
           return (
             <MenuItem

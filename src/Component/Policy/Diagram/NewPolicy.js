@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import { useContext, useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import ReactFlow from 'react-flow-renderer'
 import PolicyMain from './PolicyMain'
@@ -121,6 +121,26 @@ export default function NewPolicy() {
   const handleCloseToast = () => {
     setToast(false)
   }
+  useEffect(() => {
+    setPolicyDetail((prevState) => {
+      const verify = () => {
+        if (policyDetail.spec.ingress && !policyDetail.spec.egress) {
+          return ['Ingress']
+        } else if (!policyDetail.spec.ingress && policyDetail.spec.egress) {
+          return ['Egress']
+        } else {
+          return ['Ingress', 'Egress']
+        }
+      }
+      return {
+        ...prevState,
+        spec: {
+          ...prevState.spec,
+          policyType: [...verify()],
+        },
+      }
+    })
+  }, [policyDetail.spec.ingress, policyDetail.spec.egress])
   const handleCreateClicked = () => {
     API.post(`/${policyContext.currentNamespace}/policy/`, {
       ...policyDetail,
@@ -174,8 +194,7 @@ export default function NewPolicy() {
         <Dialog
           open={open}
           onClose={handleClose}
-          aria-labelledby='alert-dialog-title'
-          aria-describedby='alert-dialog-description'
+          BackdropProps={{ style: { backgroundColor: 'transparent' } }}
         >
           <DialogTitle>{'Change Network Policy Name'}</DialogTitle>
           <DialogContent>

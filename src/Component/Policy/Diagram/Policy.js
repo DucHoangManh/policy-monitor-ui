@@ -5,7 +5,8 @@ import { useHistory } from 'react-router-dom'
 import PolicyMain from './PolicyMain'
 import Ingress from './Ingress'
 import Engress from './Engress'
-import AddIcon from '@material-ui/icons/AddCircleOutlineOutlined'
+import FileCopyIcon from '@material-ui/icons/FileCopy'
+
 import DeleteIcon from '@material-ui/icons/Delete'
 import UpdateIcon from '@material-ui/icons/Update'
 import Dialog from '@material-ui/core/Dialog'
@@ -113,6 +114,16 @@ export default function Policy({ policyDetail, setPolicyDetail }) {
         />
 
         <Box display='flex' flexDirection='row' justifyContent='flex-end'>
+          <Fab
+            variant='extended'
+            size='small'
+            aria-label='update'
+            className={classes.margin}
+            style={{ backgroundColor: '#757de8' }}
+          >
+            <FileCopyIcon className={classes.extendedIcon} />
+            COPY
+          </Fab>
           <Fab
             variant='extended'
             size='small'

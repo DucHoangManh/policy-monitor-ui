@@ -85,32 +85,37 @@ export default function PolicyList() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {displayPolicies.map((item, index) => (
-              <TableRow hover key={item.id}>
-                <TableCell>{item.networkPolicy.metadata.name}</TableCell>
-                <TableCell>
-                  {JSON.stringify(
-                    item.networkPolicy.spec.podSelector.matchLabels
-                  )}
-                </TableCell>
-                <TableCell padding='checkbox'>
-                  <IconButton
-                    onClick={(event) => handleDeleteClicked(event, index)}
-                    disabled={!policyContext.allowUpdate}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
-                <TableCell align='right' padding='checkbox'>
-                  <IconButton
-                    component={Link}
-                    to={`/policy/${item.networkPolicy.metadata.name}`}
-                  >
-                    <OpenIcon />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
+            {displayPolicies.map((item, index) => {
+              return (
+                <TableRow hover key={item.id}>
+                  <TableCell>{item.networkPolicy.metadata.name}</TableCell>
+                  <TableCell>
+                    {item.networkPolicy.spec.podSelector.matchLabels &&
+                      JSON.stringify(
+                        item.networkPolicy.spec.podSelector.matchLabels
+                      )
+                        .replace(/['"]+/g, '')
+                        .replace(/[{}]+/g, '')}
+                  </TableCell>
+                  <TableCell padding='checkbox'>
+                    <IconButton
+                      onClick={(event) => handleDeleteClicked(event, index)}
+                      disabled={!policyContext.allowUpdate}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                  <TableCell align='right' padding='checkbox'>
+                    <IconButton
+                      component={Link}
+                      to={`/policy/${item.networkPolicy.metadata.name}`}
+                    >
+                      <OpenIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              )
+            })}
           </TableBody>
         </Table>
       </TableContainer>
