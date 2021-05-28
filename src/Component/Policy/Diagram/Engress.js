@@ -23,7 +23,6 @@ import {
   Radio,
 } from '@material-ui/core'
 import Alert from '../../Alert'
-import { useEffect } from 'react'
 const useStyles = makeStyles({
   root: {
     minWidth: 300,

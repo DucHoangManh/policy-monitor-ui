@@ -1,6 +1,6 @@
 import mermaid from 'mermaid'
 import { useEffect, useContext, useState } from 'react'
-import { Paper, Box } from '@material-ui/core'
+import { Box } from '@material-ui/core'
 import API from '../Apis/policyRequest'
 import { PolicyContext } from '../Context/policyContext'
 const refactor = (obj) => {
@@ -15,7 +15,6 @@ const refactor = (obj) => {
 export default function Visualizer() {
   const [policies, setPolicies] = useState([])
   const [policyContext] = useContext(PolicyContext)
-  const [chart, setChart] = useState('stateDiagram-v2')
   useEffect(() => {
     const fetchData = async () => {
       const res = await API.get(`/${policyContext.currentNamespace}/policy/`, {
@@ -47,8 +46,6 @@ export default function Visualizer() {
 
     Moving-->Crash
     `
-
-    console.log(policies)
 
     if (policies.length > 0) {
       let temp = 'stateDiagram-v2'

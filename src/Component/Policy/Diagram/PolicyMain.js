@@ -107,9 +107,9 @@ export default function PolicyMain({ data }) {
   const handleChangeText = (event) => {
     setFieldContent(event.target.value)
   }
-  useEffect(() => {
-    policyDetail.spec && console.log(policyDetail.spec)
-  }, [policyDetail])
+  // useEffect(() => {
+  //   policyDetail.spec && console.log(policyDetail.spec)
+  // }, [policyDetail])
   const renderNodeSelectors = () => {
     return (
       policyDetail.spec.podSelector.matchLabels &&

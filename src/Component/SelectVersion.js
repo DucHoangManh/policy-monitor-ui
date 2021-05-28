@@ -38,7 +38,6 @@ export default function SelectNamespace(props) {
     setAnchorEl(event.currentTarget)
   }
   const handleMenuItemClick = (event, index) => {
-    console.log(options[index])
     setPolicyContext({
       ...policyContext,
       currentVersion: options[index].id,

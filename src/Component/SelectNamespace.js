@@ -58,9 +58,6 @@ export default function SelectNamespace(props) {
       setSelectedIndex(1)
     })
   }, [])
-  useEffect(() => {
-    console.log(policyContext)
-  }, [policyContext])
 
   return (
     <div>

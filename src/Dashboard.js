@@ -14,10 +14,11 @@ import Badge from '@material-ui/core/Badge'
 import Container from '@material-ui/core/Container'
 import Grid from '@material-ui/core/Grid'
 import Paper from '@material-ui/core/Paper'
+import Tooltip from '@material-ui/core/Tooltip'
 
 import MenuIcon from '@material-ui/icons/Menu'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
-import NotificationsIcon from '@material-ui/icons/Notifications'
+import ContactSupportOutlinedIcon from '@material-ui/icons/ContactSupportOutlined'
 import { mainListItems } from './MenuItem'
 import Policies from './Component/Policy/PolicyList'
 import PolicyDetail from './Component/Policy/PolicyDetail'
@@ -26,7 +27,7 @@ import SelectVersion from './Component/SelectVersion'
 import NewPolicy from './Component/Policy/Diagram/NewPolicy'
 import VersionList from './Component/Version/VersionList'
 import Visualizer from './Component/Visualizer'
-import { BrowserRouter, Route, Switch } from 'react-router-dom'
+import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom'
 function Copyright() {
   return (
     <Typography variant='body2' color='textSecondary' align='center'>
@@ -162,9 +163,12 @@ export default function Dashboard() {
             <SelectVersion />
             <SelectNamespace className={classes.title} />
             <IconButton color='inherit'>
-              <Badge badgeContent={0} color='secondary'>
-                <NotificationsIcon />
-              </Badge>
+              <Tooltip
+                arrow
+                title='Select Kubernetes Namespace and Policy Version'
+              >
+                <ContactSupportOutlinedIcon />
+              </Tooltip>
             </IconButton>
           </Toolbar>
         </AppBar>
@@ -204,6 +208,9 @@ export default function Dashboard() {
                   </Route>
                   <Route exact path='/visualizer'>
                     <Visualizer />
+                  </Route>
+                  <Route path='/'>
+                    <Redirect to='/policy' />
                   </Route>
                 </Switch>
               </Paper>

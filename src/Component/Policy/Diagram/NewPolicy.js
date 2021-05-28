@@ -146,7 +146,6 @@ export default function NewPolicy() {
       ...policyDetail,
     }).then((res) => {
       if (res.status === 200) {
-        console.log(res)
         setToastContent('New Network Policy created')
         setToast(true)
         setTimeout(() => {

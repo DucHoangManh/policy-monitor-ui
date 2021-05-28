@@ -15,6 +15,12 @@ import { PolicyContext } from '../../Context/policyContext'
 import API from '../../Apis/policyRequest'
 import Title from './Title'
 import { IconButton, TextField } from '@material-ui/core'
+import Dialog from '@material-ui/core/Dialog'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogContentText from '@material-ui/core/DialogContentText'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import Button from '@material-ui/core/Button'
 
 const useStyles = makeStyles((theme) => ({
   seeMore: {
@@ -27,8 +33,10 @@ const useStyles = makeStyles((theme) => ({
 export default function PolicyList() {
   const classes = useStyles()
   const [policies, setPolicies] = useState([])
-  const [displayPolicies, setDisplayPolicices] = useState([])
+  const [displayPolicies, setDisplayPolicies] = useState([])
   const [policyContext] = useContext(PolicyContext)
+  const [open, setOpen] = useState(false)
+  const [selectToDelete, setSelectToDelete] = useState('')
   const fetchData = async () => {
     const res = await API.get(`/${policyContext.currentNamespace}/policy/`, {
       params: {
@@ -36,14 +44,15 @@ export default function PolicyList() {
       },
     })
     setPolicies(res.data)
-    setDisplayPolicices(res.data)
+    setDisplayPolicies(res.data)
   }
   const handleDeleteClicked = (event, index) => {
-    console.log(index)
+    setSelectToDelete(displayPolicies[index].networkPolicy.metadata.name)
+    setOpen(true)
   }
   const handleSearchChange = (event) => {
     const reg = new RegExp(event.target.value)
-    setDisplayPolicices(
+    setDisplayPolicies(
       policies.filter((item) => reg.test(item.networkPolicy.metadata.name))
     )
   }
@@ -53,6 +62,41 @@ export default function PolicyList() {
   useEffect(() => {
     fetchData()
   }, [])
+  const handleClose = () => {
+    setOpen(false)
+  }
+  const handleDelete = () => {
+    if (selectToDelete === '') {
+      handleClose()
+      return
+    }
+    API.delete(
+      `/${policyContext.currentNamespace}/policy/by_name/${selectToDelete}`,
+      {
+        params: {
+          version: policyContext.currentVersion,
+        },
+      }
+    ).then((res) => {
+      if (res.status === 200) {
+        setPolicies((prev) => {
+          const newList = prev.filter((policy) => {
+            return !(policy.networkPolicy.metadata.name === selectToDelete)
+          })
+          return newList
+        })
+        setDisplayPolicies((prev) => {
+          const newList = prev.filter((policy) => {
+            return !(policy.networkPolicy.metadata.name === selectToDelete)
+          })
+          return newList
+        })
+      }
+    })
+    setSelectToDelete('')
+
+    handleClose()
+  }
   const navigator = [
     {
       display: 'Network Policy',
@@ -119,6 +163,27 @@ export default function PolicyList() {
           </TableBody>
         </Table>
       </TableContainer>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby='alert-dialog-title'
+        aria-describedby='alert-dialog-description'
+      >
+        <DialogTitle>{'Confirm Delete'}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id='alert-dialog-description'>
+            Are you sure want to delete this Network Policy?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleDelete} color='primary'>
+            Delete
+          </Button>
+          <Button onClick={handleClose} color='primary' autoFocus>
+            Cancel
+          </Button>
+        </DialogActions>
+      </Dialog>
       <Box m={1} display='flex' flexDirection='row' justifyContent='flex-end'>
         <Fab
           variant='extended'
